@@ -10,6 +10,15 @@ fs.lsAll(__dirname).forEach(file_path => {
 	}
 });
 
+exports.throwE = global.throwE = throwE;
+
+function throwE (err) {
+	if (err instanceof Error) {
+		throw err
+	}else{
+		throw new Error(err)
+	}
+};
 
 exports.install = install;
 

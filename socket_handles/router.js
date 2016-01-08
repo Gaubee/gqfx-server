@@ -1,4 +1,7 @@
 var co = require("co");
+var ResponObj = require("./responObj");
+var Context = require("./context");
+
 var router_handles = exports.router_handles = new Map();
 
 exports.install = install;
@@ -35,7 +38,8 @@ function install(socket) {
 
 		var data_info = data.info;
 
-		function returnData(data) {
+		function returnData(data, type) {
+			data.body = ResponObj(type || typeof data, data)
 			socket.handles.returnData(data_info.task_id, data);
 		};
 		co(function*() {
@@ -46,22 +50,21 @@ function install(socket) {
 				_router_handle.config.emit_with.forEach((key, index) => {
 					data_info[key] = data_info.emit_with[index]
 				});
-				yield _router_handle.handle(data_info, _router_handle.config, returnData);
+				yield _router_handle.handle.call(new Context(socket, data_info, _router_handle.config), data_info, _router_handle.config);
 			} else {
 				console.error(console.flagHead("emit-task"), "找不到处理函数：", _handle_id)
 			}
 		}).then(done).catch(e => {
 			console.error(console.flagHead("emit-task"), e.stack);
-			returnData({
+			socket.handles.returnData(data_info.task_id, {
 				status: 502,
-				body: e.message
+				body: ResponObj("error", e)
 			});
 			done();
 		});
 	});
 	//数据返回
 	socket.handles.returnData = function(task_id, data) {
-		console.log("QAQ", data);
 		socket.msgInfo("return-task", {
 			task_id: task_id,
 			return_data: data

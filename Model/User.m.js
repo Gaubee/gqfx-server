@@ -19,7 +19,7 @@ module.exports = [{
 			required: true,
 			minLength: 6,
 			// maxLength: 18,
-			password: true,//统一格式化韦64位密码
+			password: true, //统一格式化韦64位密码
 		},
 		/*
 		 * 基本资料
@@ -37,10 +37,15 @@ module.exports = [{
 		},
 		user_name: { //用户名、昵称
 			type: "string",
-			defaultsTo: "",
+			defaultsTo: function() {
+				return (Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)).substring(0, 6)
+			},
 			// required: true,
 			minLength: 2,
-			maxLength: 12
+			maxLength: 12,
+			// primaryKey: true, //主键
+			// index: true, //索引
+			unique: true, //唯一
 		},
 		register_id: {
 			type: "string",
@@ -49,7 +54,10 @@ module.exports = [{
 				return (Math.random().toString().substr(2) + Math.random().toString().substr(2)).substring(0, 8)
 			},
 			minLength: 4,
-			maxLength: 11
+			maxLength: 11,
+			// primaryKey: true, //主键
+			// index: true, //索引
+			unique: true, //唯一
 		},
 		auth_status: {
 			type: "string",
@@ -61,6 +69,9 @@ module.exports = [{
 			type: "string",
 			is_phone: true,
 			required: true,
+			// primaryKey: true, //主键
+			// index: true, //索引
+			unique: true, //唯一
 		},
 		backup_phone_number: { //手机号码
 			type: "string",

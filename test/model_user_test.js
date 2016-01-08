@@ -9,17 +9,17 @@ require("../Model").install(co.wrap(function*(wl) {
 		// var users = yield [wl.collections.user.create({
 		// 	phone_number: "15659444549",
 		// 	password: "123456",
-		// 	mailing_address: {
-		// 		province: "福建省",
-		// 		details: "呵呵99号"
-		// 	}
+		// 	// mailing_address: {
+		// 	// 	province: "福建省",
+		// 	// 	details: "呵呵99号"
+		// 	// }
 		// }), wl.collections.user.create({
 		// 	phone_number: "18046048662",
 		// 	password: "123456",
-		// 	mailing_address: {
-		// 		province: "广东省",
-		// 		details: "星河100号"
-		// 	}
+		// 	// mailing_address: {
+		// 	// 	province: "广东省",
+		// 	// 	details: "星河100号"
+		// 	// }
 		// })];
 		// var u0 = users[0];
 		// var u1 = users[1];
@@ -28,11 +28,17 @@ require("../Model").install(co.wrap(function*(wl) {
 
 		// console.log(yield wl.collections.user.findOne(u1.id).populateAll())
 
+		// console.log(yield wl.collections.user.find())
+
+		// console.log(yield wl.collections.user.findOne(3))
+
 		console.log(yield wl.collections.user.find())
 
-		setTimeout(function() {
-			process.exit(0)
-		}, 1000);
+		// console.log(yield wl.collections.user.find({phone_number:"15659444549"}))
+
+		// setTimeout(function() {
+		// 	process.exit(0)
+		// }, 1000);
 	} catch (e) {
 		console.error("QAQ", e)
 	}
