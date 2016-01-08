@@ -13,7 +13,7 @@ function run() {
 	});
 };
 if (process.argv.indexOf("--with-server") !== -1) {
-	require("gq-core").run().then(run);
+	require("gq-core").run().then(run).catch(console.error);
 } else {
 	run();
 }
