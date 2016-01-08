@@ -1,0 +1,29 @@
+{
+  "name": "gqfx-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "co": "^4.6.0",
+    "gq-core": "git+https://github.com/Gaubee/gq-core.git",
+    "sails-disk": "^0.10.8",
+    "sails-memory": "^0.10.5",
+    "waterline": "^0.10.30"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "server": "node index --with-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gaubee/gqfx-server.git"
+  },
+  "author": "Gaubee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gaubee/gqfx-server/issues"
+  },
+  "homepage": "https://github.com/Gaubee/gqfx-server#readme"
+}
