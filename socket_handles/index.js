@@ -1,15 +1,17 @@
 var co = require("co");
 var tcp = require("gq-core/lib/tcp");
-//初始化TCP连接
-var socket = exports.tcp_socket = tcp.createClient({
-	address: '0.0.0.0',
-	family: 'IPv4',
-	port: 4001
-}, function() {
-});
+
 exports.install = install;
 
-function install() {
+function install(ip) {
+	//初始化TCP连接
+	var socket = exports.tcp_socket = tcp.createClient({
+		host: ip ,
+		family: 'IPv4',
+		port: 4001
+	}, function() {
+		console.log(socket.address())
+	});
 	socket.handles = Object.create(null);
 	return co(function*() {
 		//INIT

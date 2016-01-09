@@ -6,6 +6,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "gq-core": "git+https://github.com/Gaubee/gq-core.git",
+    "qiniu": "^6.1.9",
     "sails-disk": "^0.10.8",
     "sails-memory": "^0.10.5",
     "waterline": "^0.10.30"

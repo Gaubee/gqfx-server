@@ -1,3 +1,4 @@
+var ResponObj = require("./responObj");
 module.exports = Context;
 
 function Context(socket, data_info, register_config) {
@@ -17,7 +18,7 @@ function Context(socket, data_info, register_config) {
 			status: ctx._status,
 			set_cookies: ctx.set_cookies.length && ctx.set_cookies,
 			response_type: ctx.response_type,
-			body: ctx._body,
+			body: ResponObj(ctx.body_type || typeof ctx._body, ctx._body),
 			session: ctx.session
 		});
 	});

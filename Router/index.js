@@ -12,19 +12,19 @@ fs.lsAll(__dirname).forEach(file_path => {
 
 exports.throwE = global.throwE = throwE;
 
-function throwE (err) {
+function throwE(err) {
 	if (err instanceof Error) {
 		throw err
-	}else{
+	} else {
 		throw new Error(err)
 	}
 };
 
 exports.install = install;
 
-function install(waterline_instance, classMap) {
+function install(waterline_instance, classMap, core_ip) {
 	//安装Router-Handle模块
-	require("../socket_handles").install().then(function(socket) {
+	require("../socket_handles").install(core_ip).then(function(socket) {
 		socket.on("close", function() {
 			console.flag("SOCKET CLOSE", "客户端与服务端连接关闭");
 		});

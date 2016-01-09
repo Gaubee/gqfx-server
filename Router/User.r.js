@@ -28,9 +28,16 @@ function install(socket, waterline_instance, classMap) {
 				name: "password"
 			}]
 		},
-		emit_with: ["form"]
+		emit_with: ["form", "session"]
 	}, co.wrap(function*(data, config) {
 		var loginer_info = data.form;
+
+		// var v_code = this.session.VerificationCode;
+		// //校验完后就马上删除验证码
+		// this.session.VerificationCode = null;
+		// if (v_code !== loginer_info.v_code) {
+		// 	throwE("验证码有误");
+		// }
 
 		if (!loginer_info.login_name || !(loginer_info.login_name = loginer_info.login_name.trim())) {
 			throwE("登录帐号不可为空")
@@ -60,7 +67,7 @@ function install(socket, waterline_instance, classMap) {
 			params: []
 		},
 		emit_with: ["session"]
-	}, co.wrap(function *(data, config) {
+	}, co.wrap(function*(data, config) {
 		console.log(data.emit_with)
 		var loginer_id = this.session.loginer_id;
 		var loginer;
