@@ -1,7 +1,11 @@
 require("gq-core/lib/global");
 var co = require("co");
 
-require("../Model").install(co.wrap(function*(wl) {
+var waterline = require("../Model");
+var Waterline = require("waterline");
+
+
+waterline.install(co.wrap(function*(wl) {
 	// wl.collections.user.create({
 	// 	user_name: "Gaubee"
 	// }).then(console.log).catch(e => console.log("ERROR:", e))
@@ -32,13 +36,43 @@ require("../Model").install(co.wrap(function*(wl) {
 
 		// console.log(yield wl.collections.user.findOne(3))
 
-		console.log(yield wl.collections.user.find())
+		// console.log(yield wl.collections.user.find())
 
 		// console.log(yield wl.collections.user.find({phone_number:"15659444549"}))
 
-		// setTimeout(function() {
-		// 	process.exit(0)
-		// }, 1000);
+		setTimeout(function() {
+			process.exit(0)
+		}, 1000);
+
+		// var users = yield wl.collections.user.create({
+		// 	phone_number: "15659444560",
+		// 	password: "123456",
+		// 		// mailing_address: {
+		// 		// 	province: "福建省",
+		// 		// 	details: "呵呵99号"
+		// 		// }
+		// });
+
+		// console.log(users);
+
+		// users.phone_number = "15659444561";
+
+		// var users = yield wl.collections.user.create(users);
+
+		// console.log(users);
+
+		console.log(waterline.collections.user)
+
+
+
+		// console.log(Object.keys(wl.collections.user).filter(k=>!k.indexOf("findBy")))
+
+		// var users = yield waterline.collections.user.findByPhone_number("15659444551")
+		// console.log(users[0].constructor.toString(),users[0].constructor.prototype);
+		// console.log(waterline._collections.forEach(function (C) {
+		// 	console.log(users.constructor.toString() ,C.toString())
+		// }));
+		// console.log(users instanceof wl.collections.user)
 	} catch (e) {
 		console.error("QAQ", e)
 	}

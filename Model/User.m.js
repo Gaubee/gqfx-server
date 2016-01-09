@@ -1,5 +1,6 @@
 module.exports = [{
 	identity: 'user',
+	schema: true,
 	connection: 'default',
 	types: {
 		is_phone: $$.phone,
@@ -32,7 +33,7 @@ module.exports = [{
 		},
 		sex: {
 			type: "string",
-			"in": ["男", "女"],
+			enum: ["男", "女"],
 			// defaultsTo: "男"
 		},
 		user_name: { //用户名、昵称
@@ -62,7 +63,7 @@ module.exports = [{
 		auth_status: {
 			type: "string",
 			required: true,
-			"in": ["未认证", "认证中", "已认证"],
+			enum: ["未认证", "认证中", "已认证"],
 			defaultsTo: "未认证"
 		},
 		phone_number: { //手机号码
@@ -106,6 +107,9 @@ module.exports = [{
 		},
 		recommender: {
 			model: "user",
+		},
+		ZZ: function() {
+			return "QAQ " + this.user_name
 		}
 	}
 }, ]

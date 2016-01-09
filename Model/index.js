@@ -1,6 +1,7 @@
 var Waterline = require('waterline');
 var sailsMemoryAdapter = require('sails-memory');
 var sailsDiskAdapter = require('sails-disk');
+var co = require("co");
 
 // Create the waterline instance.
 var waterline = new Waterline();
@@ -15,7 +16,7 @@ var config = {
 	connections: {
 		default: {
 			adapter: 'disk'
-			// adapter: 'memory'
+				// adapter: 'memory'
 		}
 	}
 };
@@ -61,6 +62,15 @@ waterline.install = function(cb) {
 		install_w.ok(0, ontology)
 	});
 };
+
+waterline.ontology = co.wrap(function*() {
+	function _(done) {
+		waterline.install(function(ontology) {
+			done(null, ontology)
+		})
+	};
+	return yield _;
+});
 
 waterline.buildAssociations = function(model) {
 	model.associations = [];

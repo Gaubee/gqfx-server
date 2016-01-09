@@ -17,7 +17,8 @@ function install(waterline_instance, callback) {
 	Object.keys(controllers).forEach(key => {
 		console.group(console.flagHead("controller-install"));
 		console.log("安装", key, "完成")
-		classMap.set(key, controllers[key].install(waterline_instance));
+		var class_con = controllers[key].install(waterline_instance);
+		classMap.set(class_con.name, class_con);
 		console.groupEnd(console.flagHead("controller-install"));
 	});
 	callback(waterline_instance, classMap);
