@@ -86,6 +86,10 @@ module.exports = [{
 			model: "address",
 			// required: true
 		},
+		user_head_url:{
+			type:"string",
+			is_url: true
+		},
 		/*
 		 * 认证信息
 		 */
