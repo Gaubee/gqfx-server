@@ -61,7 +61,20 @@ waterline.install(co.wrap(function*(wl) {
 
 		// console.log(users);
 
-		console.log(waterline.collections.user)
+		var userIds = [11, 6, 4, 7, 8]
+		console.time()
+		for (var i = 0; i < 100; i += 1) {
+			console.log((yield waterline.collections.user.find(userIds)).map(u => u.id))
+		}
+		console.timeEnd()
+
+		console.time()
+		for (var i = 0; i < 100; i += 1) {
+			console.log((yield userIds.map(function(user_id) {
+				return waterline.collections.user.findOne(user_id);
+			})).map(u => u.id));
+		}
+		console.timeEnd()
 
 
 

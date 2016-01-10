@@ -71,6 +71,16 @@ waterline.ontology = co.wrap(function*() {
 	};
 	return yield _;
 });
+var _Model_Cache_;
+waterline.getModel = co.wrap(function*(model_identity) {
+	model_identity = model_identity.underlize();
+	if (!_Model_Cache_) {
+		var wl_ins = yield waterline.ontology();
+		_Model_Cache_ = wl_ins.collections;
+	}
+	var classModel = _Model_Cache_[model_identity];
+	return classModel;
+});
 
 waterline.buildAssociations = function(model) {
 	model.associations = [];

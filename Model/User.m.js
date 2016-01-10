@@ -7,13 +7,10 @@ module.exports = [{
 		is_id_number: $$.id_card,
 		is_url: $$.isUrl,
 		is_bank_card: $$.bank_card,
-		password: function(password) {
-			if (this.password.length < 32) {
-				this.password = $$.md5_2(password);
-			}
-			return true;
+		md5_2_password: function (password) {
+			return true
 		},
-		length: function(str,length) {
+		length: function(str, length) {
 			return str.length === length
 		}
 	},
@@ -24,13 +21,27 @@ module.exports = [{
 			required: true,
 			minLength: 6,
 			// maxLength: 18,
-			password: true, //统一格式化韦64位密码
+			md5_2_password: function(cb) { //统一格式化韦64位密码
+				if (this.password.length < 32) {
+					this.password = $$.md5_2(this.password);
+				}
+				cb(this.password);
+			},
 		},
 		permis_password: {
 			title: "二级密码",
 			type: "string",
 			minLength: 6,
-			password: true
+			md5_2_password: function(cb) { //统一格式化韦64位密码
+				if (!this.permis_password) {
+					this.permis_password = this.password;
+				}
+				if (this.permis_password.length < 32) {
+					this.permis_password = $$.md5_2(this.permis_password);
+				}
+				console.log(this.permis_password)
+				cb(this.permis_password);
+			},
 		},
 		/*
 		 * 基本资料

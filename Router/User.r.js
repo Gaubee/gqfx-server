@@ -3,7 +3,6 @@ var co = require("co");
 var Context = require("../socket_handles/context");
 
 function install(socket, waterline_instance, classMap) {
-
 	"use strict";
 
 	// 拓展ctx的方法
@@ -121,16 +120,16 @@ function install(socket, waterline_instance, classMap) {
 						des: `整个form对应一个的用户类。
 注意：其中id、createdAt、updatedAt等系统关键字以及register_id、password等特殊关键字是不会被外部修改的`
 					}, {
-						name: "[query]",
-						type: "Object",
+						name: "[query.verify]",
+						type: "Boolean",
 						can_null: true,
-						des: "整个query对应 修改时的 参数配置。(暂时不提供任何可选参数)"
+						des: "通知管理员审核此用户"
 					}],
 				},
-				emit_with: ["session", "form"]
+				emit_with: ["session", "form", "query"]
 			}, function*(data, config) {
 				var user_loginer = yield this.user_loginer;
-				yield user_loginer.update(data.form);
+				yield user_loginer.update(data.form, data.query);
 				this.body = user_loginer;
 			}]
 		},
