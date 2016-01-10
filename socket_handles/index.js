@@ -6,7 +6,7 @@ exports.install = install;
 function install(ip) {
 	//初始化TCP连接
 	var socket = exports.tcp_socket = tcp.createClient({
-		host: ip ,
+		host: ip,
 		family: 'IPv4',
 		port: 4001
 	}, function() {
@@ -14,11 +14,14 @@ function install(ip) {
 	});
 	socket.handles = Object.create(null);
 	return co(function*() {
+		var package_json = require("../package.json");
 		//INIT
 		socket.msgInfo("router-init", {
 			info: {
-				author: "Gaubee",
-				version: "1.0.0"
+				name: package_json.name,
+				author: package_json.author,
+				version: package_json.version,
+				description: package_json.description,
 			},
 			address: {
 				host: "0.0.0.0",

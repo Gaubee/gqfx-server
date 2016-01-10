@@ -43,7 +43,16 @@ function install(socket, waterline_instance, classMap) {
 		},
 		"put": {
 			"/resolve_verifyapply_by_user_id/:user_id": [{
-				doc: {},
+				doc: {
+					des: "用户申请认证 => 通过认证",
+					params: [{
+						name: "[params.user_id]",
+						des: "用户ID"
+					}],
+					returns: [{
+						type: "[Model.User]"
+					}],
+				},
 				emit_with: ["session", "params"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
@@ -51,7 +60,16 @@ function install(socket, waterline_instance, classMap) {
 				this.body = yield admin_loginer.resolveVerifyApplyByUserId(user_id);
 			}],
 			"/reject_verifyapply_by_user_id/:user_id": [{
-				doc: {},
+				doc: {
+					des: "用户申请认证 => 驳回认证",
+					params: [{
+						name: "[params.user_id]",
+						des: "用户ID"
+					}],
+					returns: [{
+						type: "[Model.User]"
+					}],
+				},
 				emit_with: ["session", "params"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
@@ -59,7 +77,16 @@ function install(socket, waterline_instance, classMap) {
 				this.body = yield admin_loginer.rejectVerifyApplyByUserId(user_id);
 			}],
 			"/withdraw_verify_result_by_user_id/:user_id": [{
-				doc: {},
+				doc: {
+					des: "用户申请认证 => 撤销认证",
+					params: [{
+						name: "[params.user_id]",
+						des: "用户ID"
+					}],
+					returns: [{
+						type: "[Model.User]"
+					}],
+				},
 				emit_with: ["session", "params"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
