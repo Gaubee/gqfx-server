@@ -11,7 +11,13 @@ function install() {
 			return jsonObj;
 		}
 		update(new_obj) {
-			delete new_obj.register_id;
+			[
+				"register_id",
+				"password",
+				"auth_status",
+				"phone_number",
+				"permis_passwor",
+			].forEach(key => delete new_obj[key]);
 			return super.update(new_obj);
 		}
 	}

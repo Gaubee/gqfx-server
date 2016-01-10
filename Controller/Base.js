@@ -56,7 +56,7 @@ class Base {
 		delete new_obj.createdAt;
 		delete new_obj.updatedAt;
 		for (var key in new_obj) {
-			if (new_obj.hasOwnProperty(key) && this.model.hasOwnProperty(key) && !Function.isFunction(this.model[key])) {
+			if (new_obj.hasOwnProperty(key) && !Function.isFunction(this.model[key])) {
 				this.model[key] = new_obj[key];
 			}
 		}

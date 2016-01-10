@@ -74,6 +74,12 @@ waterline.ontology = co.wrap(function*() {
 
 waterline.buildAssociations = function(model) {
 	model.associations = [];
+	console.log(model.types)
+	model.types = Object.mix(model.types, {
+		title: function() {
+			return true
+		}
+	});
 	Object.keys(model.attributes).forEach(function(attrName) {
 		var attr = model.attributes[attrName];
 		if (attr.model || attr.collection) {

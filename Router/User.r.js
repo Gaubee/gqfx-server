@@ -119,7 +119,7 @@ function install(socket, waterline_instance, classMap) {
 						name: "[form]",
 						type: "Model.User",
 						des: `整个form对应一个的用户类。
-注意：其中id、createdAt、updatedAt等系统关键字以及register_id等固定关键字是不会被外部修改的`
+注意：其中id、createdAt、updatedAt等系统关键字以及register_id、password等特殊关键字是不会被外部修改的`
 					}, {
 						name: "[query]",
 						type: "Object",
