@@ -8,10 +8,11 @@ function install(socket, waterline_instance, classMap) {
 
 	// 拓展ctx的方法
 	Context.prototype.__defineGetter__("user_loginer", co.wrap(function*() {
+		console.log(this.session)
 		if (!this._user_loginer) {
 			var user_loginer_id = this.session.user_loginer_id;
 			var user_loginer;
-			if (user_loginer_id === undefined ||
+			if (user_loginer_id == undefined /*null/undefined*/ ||
 				!(user_loginer = yield waterline_instance.collections.user.findOne(user_loginer_id))
 			) {
 				throwE("用户未登录")
@@ -117,8 +118,7 @@ function install(socket, waterline_instance, classMap) {
 					params: [{
 						name: "[form]",
 						type: "Model.User",
-						des: 
-`整个form对应一个的用户类。
+						des: `整个form对应一个的用户类。
 注意：其中id、createdAt、updatedAt等系统关键字以及register_id等固定关键字是不会被外部修改的`
 					}, {
 						name: "[query]",
@@ -132,6 +132,17 @@ function install(socket, waterline_instance, classMap) {
 				var user_loginer = yield this.user_loginer;
 				yield user_loginer.update(data.form);
 				this.body = user_loginer;
+			}]
+		},
+		"delete": {
+			"/login_out": [{
+				doc: {
+					des: "注销已经登录的用户"
+				},
+				emit_with: ["session"]
+			}, function*(data, config) {
+				this.session.user_loginer_id = null;
+				this.body = "success"
 			}]
 		}
 	};
