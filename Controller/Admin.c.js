@@ -12,7 +12,7 @@ function install() {
 	class Admin extends Base {
 
 	};
-	Admin.prototype.getVerifyApplyUsers = co.wrap(function*(num, page) {
+	Admin.prototype.getVerifyApplyUsers = co.wrap(function*(num, page, options) {
 		num = parseInt(num, 10) || 0;
 		page = parseInt(page, 10) || 0;
 		var start = num * page;
@@ -40,7 +40,25 @@ function install() {
 				});
 			}
 		}
-		return userControlList;
+		var res = {
+			num: num,
+			page: page,
+			list: userControlList
+		};
+		if (options) {
+			if (options.with_total_info) {
+				var total_num = parseInt(yield redis_client.thunk.ZCOUNT(["Admin.VerifyApply", "-inf", "+inf"]), 10);
+				if (num && total_page) {
+					var total_page = Math.ceil(total_page / num);
+				} else {
+					total_page = 1;
+				}
+				res.total_num = total_num;
+				res.total_page = total_page;
+			}
+		}
+
+		return res;
 	});
 	Admin.prototype.resolveVerifyApplyByUserId = co.wrap(function*(user_id) {
 		var UserCon = classMap.get("User");

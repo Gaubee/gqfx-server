@@ -7,14 +7,13 @@ module.exports = [{
 		is_id_number: $$.id_card,
 		is_url: $$.isUrl,
 		is_bank_card: $$.bank_card,
-		md5_2_password: function (password) {
-			return true
-		},
-		length: function(str, length) {
-			return str.length === length
-		}
 	},
 	attributes: { //PS：初步注册的时候只需要手机号码和密码，其它数据可以再后台进一步完善
+		status: {
+			type: "string",
+			enum: ["冻结", "正常"],
+			defaultsTo: "冻结"
+		},
 		password: {
 			title: "登录密码",
 			type: "string",
@@ -39,7 +38,6 @@ module.exports = [{
 				if (this.permis_password.length < 32) {
 					this.permis_password = $$.md5_2(this.permis_password);
 				}
-				console.log(this.permis_password)
 				cb(this.permis_password);
 			},
 		},

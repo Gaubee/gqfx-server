@@ -1,6 +1,8 @@
 //加载全局拓展
 require("gq-core/lib/global");
 
+exports.run = run;
+
 function run() {
 	var address_index;
 	if ((address_index = process.argv.indexOf("--address")) !== -1) {

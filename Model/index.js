@@ -88,6 +88,12 @@ waterline.buildAssociations = function(model) {
 	model.types = Object.mix(model.types, {
 		title: function() {
 			return true
+		},
+		md5_2_password: function (password) {
+			return true
+		},
+		length: function(str, length) {
+			return str.length === length
 		}
 	});
 	Object.keys(model.attributes).forEach(function(attrName) {

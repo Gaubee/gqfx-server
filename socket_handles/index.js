@@ -4,12 +4,13 @@ var tcp = require("gq-core/lib/tcp");
 exports.install = install;
 
 function install(ip) {
-	//初始化TCP连接
-	var socket = exports.tcp_socket = tcp.createClient({
+	var address = {
 		host: ip,
 		family: 'IPv4',
 		port: 4001
-	}, function() {
+	};
+	//初始化TCP连接
+	var socket = exports.tcp_socket = tcp.createClient(address, function() {
 		console.log(socket.address())
 	});
 	socket.handles = Object.create(null);
@@ -25,10 +26,18 @@ function install(ip) {
 			},
 			address: {
 				host: "0.0.0.0",
-				port: 1234
+				port: 4001
 			},
 			initKey: "GAUBEE-INIT-KEY-HASH"
 		});
+		//RE-CONNECT
+		// socket.on("close", function re_con() {
+		// 	setTimeout(function() {
+		// 		tcp.net.connect(address, function() {
+		// 			require("../index").run()
+		// 		}).on("error", re_con);
+		// 	}, 1000)
+		// });
 
 		yield new Promise(function(resolve, reject) {
 			socket.onMsgSuccess("router-init", function(data, done) {
