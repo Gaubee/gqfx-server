@@ -16,8 +16,8 @@ class Base {
 			) {
 				self.model = model;
 			} else {
+				var classModel = yield waterline.getModel(self.constructor.name);
 				if (model && model.id) {
-					var classModel = yield waterline.getModel(self.constructor.name);
 					self.model = yield classModel.findOne(model.id)
 				} else {
 					self.model = yield classModel.create(model)
@@ -30,28 +30,40 @@ class Base {
 	static getInstance(instance_data) {
 		return new this(instance_data);
 	}
+	static getModel() {
+		var self = this;
+		return co(function*() {
+			return waterline.getModel(self.name);
+		})
+	}
+	static create(new_obj) {
+		var self = this;
+		return co(function*() {
+			var classModel = yield self.getModel();
+			var model = yield classModel.create(query_data);
+			return model;
+		})
+	}
 	static find(query_data, is_to_instance) {
 		var self = this;
-		var model_identity = this.name;
 		return co(function*() {
-			var classModel = yield waterline.getModel(model_identity);
-			var userModelList = yield classModel.find(query_data);
+			var classModel = yield self.getModel();
+			var modelList = yield classModel.find(query_data);
 			if (is_to_instance) {
-				userModelList = yield userModelList.map(userModel => self.getInstance(userModel));
+				modelList = yield modelList.map(model => self.getInstance(model));
 			}
-			return userModelList;
+			return modelList;
 		})
 	}
 	static findOne(query_data, is_to_instance) {
 		var self = this;
-		var model_identity = this.name;
 		return co(function*() {
-			var classModel = yield waterline.getModel(model_identity);
-			var userModel = yield classModel.findOne(query_data);
+			var classModel = yield self.getModel();
+			var model = yield classModel.findOne(query_data);
 			if (is_to_instance) {
-				userModel = yield self.getInstance(userModel);
+				model = yield self.getInstance(model);
 			}
-			return userModel;
+			return model;
 		})
 	}
 
@@ -89,7 +101,7 @@ class Base {
 			yield self.model.save();
 
 			// 要走数据库的数据整理模块，所以需要重新取一次
-			var classModel = yield waterline.getModel(self.constructor.name);
+			var classModel = yield self.getModel();
 			self.model = yield classModel.findOne(self.model.id);
 			return self;
 		});

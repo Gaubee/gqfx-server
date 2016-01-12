@@ -13,6 +13,7 @@ function install() {
 
 	};
 	Admin.prototype.getVerifyApplyUsers = co.wrap(function*(num, page, options) {
+		console.log("options",options)
 		num = parseInt(num, 10) || 0;
 		page = parseInt(page, 10) || 0;
 		var start = num * page;
@@ -41,7 +42,7 @@ function install() {
 			}
 		}
 		var res = {
-			num: num,
+			num: num || userControlList.length,
 			page: page,
 			list: userControlList
 		};

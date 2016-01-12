@@ -12,7 +12,7 @@ module.exports = [{
 		status: {
 			type: "string",
 			enum: ["冻结", "正常"],
-			defaultsTo: "冻结"
+			defaultsTo: "正常"
 		},
 		password: {
 			title: "登录密码",
