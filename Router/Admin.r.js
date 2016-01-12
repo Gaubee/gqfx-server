@@ -33,7 +33,9 @@ function install(socket, waterline_instance, classMap) {
 		"prefix": "/admin",
 		"get": {
 			"/loginer": [{
-				des: "获取已经登录的管理员",
+				doc: {
+					des: "获取已经登录的管理员",
+				},
 				emit_with: ["session"]
 			}, function*(data) {
 				this.body = yield this.admin_loginer;
@@ -41,7 +43,9 @@ function install(socket, waterline_instance, classMap) {
 		},
 		"post": {
 			"/create": [{
-				des: "",
+				doc: {
+					des: "",
+				},
 				emit_with: ["form"]
 			}, function*(data) {
 				var AdminCon = classMap.get("Admin");
