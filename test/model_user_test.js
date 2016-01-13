@@ -61,20 +61,38 @@ waterline.install(co.wrap(function*(wl) {
 
 		// console.log(users);
 
-		var userIds = [11, 6, 4, 7, 8]
-		console.time()
-		for (var i = 0; i < 100; i += 1) {
-			console.log((yield waterline.collections.user.find(userIds)).map(u => u.id))
-		}
-		console.timeEnd()
+		// var userIds = [11, 6, 4, 7, 8]
+		// console.time()
+		// for (var i = 0; i < 100; i += 1) {
+		// 	console.log((yield waterline.collections.user.find(userIds)).map(u => u.id))
+		// }
+		// console.timeEnd()
 
-		console.time()
-		for (var i = 0; i < 100; i += 1) {
-			console.log((yield userIds.map(function(user_id) {
-				return waterline.collections.user.findOne(user_id);
-			})).map(u => u.id));
-		}
-		console.timeEnd()
+		// console.time()
+		// for (var i = 0; i < 100; i += 1) {
+		// 	console.log((yield userIds.map(function(user_id) {
+		// 		return waterline.collections.user.findOne(user_id);
+		// 	})).map(u => u.id));
+		// }
+		// console.timeEnd()
+
+		var users = yield waterline.collections.user.find();
+		console.log(users.map(user => user.id + " " + user.phone_number));
+
+		var users = yield waterline.collections.user.find({
+			phone_number: "15659444555",
+			limit: 3,
+			skip: 0,
+			sort: "id DESC"
+		});
+		console.log(users.map(user => user.id + " " + user.phone_number));
+
+		var query = waterline.collections.user.find();
+		query.skip(1)
+		query.limit(4)
+		query.sort("id DESC");
+		var users = yield query;
+		console.log(users.map(user => user.id + " " + user.phone_number));
 
 
 
