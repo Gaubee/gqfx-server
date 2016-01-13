@@ -10,6 +10,7 @@ module.exports = [{
 	},
 	attributes: { //PS：初步注册的时候只需要手机号码和密码，其它数据可以再后台进一步完善
 		status: {
+			title: "帐号状态", //只能被管理员所修改
 			type: "string",
 			enum: ["冻结", "正常"],
 			defaultsTo: "正常"

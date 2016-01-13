@@ -71,7 +71,13 @@ function install(classMap, RedisClient) {
 			new_user.asset = yield AssetCon.clone(member_type); // clone
 			return yield new_user.save();
 		}),
-
+		changeUserStatus: co.wrap(function*(user_id, status) {
+			var UserCon = classMap.get("User")
+			var UserModel = yield UserCon.getModel();
+			return yield UserModel.update(user_id, {
+				status: status
+			});
+		})
 	}
 	return proto;
 }
