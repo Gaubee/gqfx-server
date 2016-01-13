@@ -36,13 +36,26 @@ class Base {
 			return waterline.getModel(self.name);
 		})
 	}
-	static create(new_obj) {
+	static create(new_obj, is_to_instance) {
 		var self = this;
 		return co(function*() {
 			var classModel = yield self.getModel();
-			var model = yield classModel.create(query_data);
+
+			// 删除系统自带的关键字段
+			delete new_obj.id;
+			delete new_obj.createdAt;
+			delete new_obj.updatedAt;
+
+			var model = yield classModel.create(new_obj);
+			if (is_to_instance) {
+				model = yield self.getInstance(model);
+			}
 			return model;
 		})
+	}
+	static clone(new_obj, is_to_instance) {
+		new_obj = new_obj.$deepClone();
+		return this.create(new_obj, is_to_instance);
 	}
 	static find(query_data, is_to_instance) {
 		var self = this;
@@ -66,6 +79,14 @@ class Base {
 			return model;
 		})
 	}
+	static remove(remover){
+		var self = this;
+		return co(function * () {
+			var classModel = yield self.getModel();
+			var res = yield classModel.destroy(remover);
+			return res;
+		})
+	}
 
 	// 会被JSON.stringify调用
 	toJSON() {
@@ -81,8 +102,9 @@ class Base {
 	destroy() {
 		var self = this;
 		return co(function*() {
-			yield self.model.destroy();
-			self.model = null
+			var res = yield self.model.destroy();
+			self.model = null;
+			return res;
 		});
 	}
 
@@ -101,10 +123,14 @@ class Base {
 			yield self.model.save();
 
 			// 要走数据库的数据整理模块，所以需要重新取一次
-			var classModel = yield self.getModel();
+			var classModel = yield self.constructor.getModel();
 			self.model = yield classModel.findOne(self.model.id);
 			return self;
 		});
+	}
+
+	getDetail(){
+		return this.model.populateAll();
 	}
 };
 

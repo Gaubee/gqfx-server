@@ -55,7 +55,12 @@ function install(socket) {
 				console.error(console.flagHead("emit-task"), "找不到处理函数：", _handle_id)
 			}
 		}).then(done).catch(e => {
-			console.error(console.flagHead("emit-task"), e.stack);
+			console.error(console.flagHead("emit-task"),
+				e instanceof Object ?
+				(e.toString !== Error.prototype.toString ?
+					e :
+					e.stack /*如果有重写了toString方法，就用重写的，否则直接打印堆栈*/ ) :
+				e);
 			socket.handles.returnData(data_info.task_id, {
 				status: 502,
 				body: ResponObj("error", e)

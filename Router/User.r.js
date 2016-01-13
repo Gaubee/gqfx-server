@@ -12,7 +12,7 @@ function install(socket, waterline_instance, classMap) {
 			var user_loginer_id = this.session.user_loginer_id;
 			var user_loginer;
 			if (user_loginer_id == undefined /*null/undefined*/ ||
-				!(user_loginer = yield waterline_instance.collections.user.findOne(user_loginer_id))
+				!(user_loginer = yield classMap.get("User").findOne(user_loginer_id))
 			) {
 				throwE("用户未登录")
 			}
@@ -48,8 +48,9 @@ function install(socket, waterline_instance, classMap) {
 				},
 				emit_with: ["params", "form"]
 			}, function*(data, config) {
+				var UserCon = classMap.get("User");
 				var recommender_id = data.params.recommender_id;
-				var recommender = yield waterline_instance.collections.user.findOne(recommender_id);
+				var recommender = yield UserCon.findOne(recommender_id);
 				if (!recommender) {
 					throwE("找不到推荐人信息")
 				}
@@ -61,11 +62,12 @@ function install(socket, waterline_instance, classMap) {
 			}],
 			"/create": [{
 				doc: {
-					des: "创建用户"
+					des: "⚠ 创建用户"
 				},
 				emit_with: ["form"]
 			}, function*(data, config) {
-				var user = yield waterline_instance.collections.user.create(data.form);
+				var UserCon = classMap.get("User");
+				var user = yield UserCon.getInstance(data.form);
 				this.body = user;
 			}],
 			"/login": [{
@@ -92,7 +94,7 @@ function install(socket, waterline_instance, classMap) {
 				if (!loginer_info.login_name || !(loginer_info.login_name = loginer_info.login_name.trim())) {
 					throwE("登录帐号不可为空")
 				}
-				var loginer = yield waterline_instance.collections.user.findOne([{
+				var loginer = yield classMap.get("User").findOne([{
 					phone_number: loginer_info.login_name
 				}, {
 					user_name: loginer_info.login_name

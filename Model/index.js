@@ -84,7 +84,6 @@ waterline.getModel = co.wrap(function*(model_identity) {
 
 waterline.buildAssociations = function(model) {
 	model.associations = [];
-	console.log(model.types)
 	model.types = Object.mix(model.types, {
 		title: function() {
 			return true

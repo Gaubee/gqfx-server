@@ -3,7 +3,6 @@ exports.install = install;
 var co = require("co");
 
 var Base = require("./Base");
-var UserCon = require("../Model");
 var classMap = require("./index").classMap;
 var RedisClient = require("../Model/redis_index");
 
@@ -13,7 +12,7 @@ function install() {
 
 	};
 	Admin.prototype.getVerifyApplyUsers = co.wrap(function*(num, page, options) {
-		console.log("options",options)
+		console.log("options", options)
 		num = parseInt(num, 10) || 0;
 		page = parseInt(page, 10) || 0;
 		var start = num * page;
@@ -115,5 +114,15 @@ function install() {
 
 		return user;
 	});
+
+	fs.lsAll(__dirname + "/Admin").forEach(file_path => {
+		var _ext = ".cp.js";
+		console.log(file_path)
+		if (file_path.endWith(_ext)) {
+			console.flag("Install Contrill Proto", file_path);
+			Admin.prototype.$extends(require(file_path).install(classMap, RedisClient))
+		}
+	});
+
 	return Admin
 }

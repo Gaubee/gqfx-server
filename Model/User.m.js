@@ -150,5 +150,12 @@ module.exports = [{
 			title: "注册推荐人",
 			model: "user",
 		},
+		/*
+		 * 外部信息
+		 */
+		asset: {
+			title: "资产信息",
+			model: "asset"
+		}
 	}
 }, ]

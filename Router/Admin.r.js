@@ -17,14 +17,6 @@ function install(socket, waterline_instance, classMap) {
 				throwE("管理员未登录")
 			}
 			this._admin_loginer = yield classMap.get("Admin").getInstance(admin_loginer);
-
-			// var admin_loginer = yield classMap.get("Admin").getInstance({
-			// 	id: 1,
-			// 	admin_name: "Gaubee",
-			// 	password: "123456"
-			// });
-
-			this._admin_loginer = admin_loginer;
 		}
 		return this._admin_loginer
 	}));
@@ -44,7 +36,7 @@ function install(socket, waterline_instance, classMap) {
 		"post": {
 			"/create": [{
 				doc: {
-					des: "",
+					des: "⚠ 直接创建管理员",
 				},
 				emit_with: ["form"]
 			}, function*(data) {

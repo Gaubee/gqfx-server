@@ -28,6 +28,7 @@ function install() {
 					"auth_status",
 					"phone_number",
 					"permis_password",
+					"asset",
 				].forEach(key => delete new_obj[key]);
 
 				// 认证申请

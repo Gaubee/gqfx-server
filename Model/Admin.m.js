@@ -8,7 +8,7 @@ module.exports = [{
 			enum: ["冻结", "正常"],
 			defaultsTo: "正常"
 		},
-		level:{
+		level: {
 			type: "string",
 			enum: ["顶级"],
 			defaultsTo: "顶级"
