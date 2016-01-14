@@ -73,15 +73,15 @@ class Base {
 		return co(function*() {
 			var classModel = yield self.getModel();
 			var model = yield classModel.findOne(query_data);
-			if (is_to_instance) {
+			if (model && is_to_instance) {
 				model = yield self.getInstance(model);
 			}
 			return model;
 		})
 	}
-	static remove(remover){
+	static remove(remover) {
 		var self = this;
-		return co(function * () {
+		return co(function*() {
 			var classModel = yield self.getModel();
 			var res = yield classModel.destroy(remover);
 			return res;
@@ -129,7 +129,7 @@ class Base {
 		});
 	}
 
-	getDetail(){
+	getDetail() {
 		return this.model.populateAll();
 	}
 };

@@ -12,11 +12,11 @@ function install(socket, waterline_instance, classMap) {
 			var user_loginer_id = this.session.user_loginer_id;
 			var user_loginer;
 			if (user_loginer_id == undefined /*null/undefined*/ ||
-				!(user_loginer = yield classMap.get("User").findOne(user_loginer_id))
+				!(user_loginer = yield classMap.get("User").findOne(user_loginer_id, true))
 			) {
 				throwE("用户未登录")
 			}
-			this._user_loginer = yield classMap.get("User").getInstance(user_loginer);
+			this._user_loginer = user_loginer;
 		}
 		return this._user_loginer
 	}));

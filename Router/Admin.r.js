@@ -12,11 +12,11 @@ function install(socket, waterline_instance, classMap) {
 			var admin_loginer_id = this.session.admin_loginer_id;
 			var admin_loginer;
 			if (admin_loginer_id == undefined /*null/undefined*/ ||
-				!(admin_loginer = yield waterline_instance.collections.user.findOne(admin_loginer_id))
+				!(admin_loginer = yield classMap.get("Admin").findOne(admin_loginer_id, true))
 			) {
 				throwE("管理员未登录")
 			}
-			this._admin_loginer = yield classMap.get("Admin").getInstance(admin_loginer);
+			this._admin_loginer = admin_loginer;
 		}
 		return this._admin_loginer
 	}));
