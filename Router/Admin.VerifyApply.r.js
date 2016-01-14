@@ -45,7 +45,7 @@ function install(socket, waterline_instance, classMap) {
 						des: "用户数组数据"
 					}]
 				},
-				emit_with: ["query"]
+				emit_with: ["session", "query"]
 			}, function*(data, config) {
 				var admin_loginer = yield this.admin_loginer;
 				var query = data.query;
