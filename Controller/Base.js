@@ -17,9 +17,14 @@ class Base {
 				self.model = model;
 			} else {
 				var classModel = yield waterline.getModel(self.constructor.name);
+				// findOrCreate会有安全问题，不用
+				// self.model = yield classModel.findOrCreate(model);
+				console.log(model && model.id)
 				if (model && model.id) {
-					self.model = yield classModel.findOne(model.id)
-				} else {
+					self.model = yield classModel.findOne(model.id);
+				}
+				console.log(self.model)
+				if (!self.model) {
 					self.model = yield classModel.create(model)
 				}
 			}

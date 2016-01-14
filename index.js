@@ -1,5 +1,6 @@
 //加载全局拓展
 require("gq-core/lib/global");
+var co = require("co");
 
 exports.run = run;
 
@@ -12,10 +13,29 @@ function run() {
 	//安装Model层
 	require("./Model").install(function(waterline_instance) {
 		//初始化控制层
-		require("./Controller").install(waterline_instance, function(waterline_instance, classMap) {
+		require("./Controller").install(waterline_instance, co.wrap(function*(waterline_instance, classMap) {
+
+			//查询版本对应的脚本并执行
+			var package_json = require("./package.json");
+			var script_file_name = "v" + package_json.version + ".script.js";
+			var script_file_path = __dirname + "/Script/" + script_file_name;
+			if (fs.existsSync(script_file_path)) {
+				var script_module = require(script_file_path);
+				yield script_module.run(waterline_instance, classMap).then(init_router).catch(e => {
+					console.flag("RUN SCRIPT ERROR", script_file_name);
+					console.error(e);
+					Function.isFunction(script_module.onerror) && script_module.onerror(e);
+				});
+			} else {
+				init_router();
+			}
+
 			//初始化路由层
-			require("./Router").install(waterline_instance, classMap, with_ip);
-		});
+			function init_router() {
+				require("./Router").install(waterline_instance, classMap, with_ip);
+			}
+
+		}));
 	});
 };
 if (process.argv.indexOf("--with-server") !== -1) {

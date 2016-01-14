@@ -4,7 +4,6 @@ var co = require("co");
 function install(classMap, RedisClient) {
 	var proto = {
 		getVerifyApplyUsers: co.wrap(function*(num, page, options) {
-			console.log("options", options)
 			num = parseInt(num, 10) || 0;
 			page = parseInt(page, 10) || 0;
 			var start = num * page;

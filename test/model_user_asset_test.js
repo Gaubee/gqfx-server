@@ -29,6 +29,7 @@ waterline.install(co.wrap(function*(wl) {
 
 		var user = yield waterline.collections.user.findOne(8).populateAll();
 		console.log(user);
+
 	} catch (e) {
 		console.error("QAQ", e)
 	}

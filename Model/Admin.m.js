@@ -17,7 +17,8 @@ module.exports = [{
 		admin_name: {
 			title: "管理员帐号名",
 			type: "string",
-			required: true
+			unique: true, //唯一
+			required: true,
 		},
 		password: {
 			title: "登录密码",
