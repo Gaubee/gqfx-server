@@ -11,10 +11,8 @@ function install() {
 	class Admin extends Base {
 
 	};
-
 	fs.lsAll(__dirname + "/Admin").forEach(file_path => {
 		var _ext = ".cp.js";
-		console.log(file_path)
 		if (file_path.endWith(_ext)) {
 			console.flag("Install Contrill Proto", file_path);
 			Admin.prototype.$extends(require(file_path).install(classMap, RedisClient))

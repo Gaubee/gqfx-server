@@ -52,11 +52,7 @@ function install(classMap, RedisClient) {
 			return res;
 		}),
 		resolveVerifyApplyByUserId: co.wrap(function*(user_id) {
-			var UserCon = classMap.get("User");
-			var user = yield UserCon.findOne(user_id);
-			if (!user) {
-				throwE("找不到指定用户")
-			}
+			var user = yield this.getUserById(user_id);
 
 			if (user.auth_status !== "认证中") {
 				throwE("指定用户并没有申请认证");
@@ -71,11 +67,7 @@ function install(classMap, RedisClient) {
 			return user;
 		}),
 		rejectVerifyApplyByUserId: co.wrap(function*(user_id) {
-			var UserCon = classMap.get("User");
-			var user = yield UserCon.findOne(user_id);
-			if (!user) {
-				throwE("找不到指定用户")
-			}
+			var user = yield this.getUserById(user_id);
 
 			if (user.auth_status !== "认证中") {
 				throwE("指定用户并没有申请认证");
@@ -90,11 +82,7 @@ function install(classMap, RedisClient) {
 			return user;
 		}),
 		withdrawVerifyResultByUserId: co.wrap(function*(user_id) {
-			var UserCon = classMap.get("User");
-			var user = yield UserCon.findOne(user_id);
-			if (!user) {
-				throwE("找不到指定用户")
-			}
+			var user = yield this.getUserById(user_id);
 
 			if (user.auth_status !== "已认证") {
 				throwE("指定用户并没有通过认证");

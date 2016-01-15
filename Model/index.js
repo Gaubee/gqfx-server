@@ -88,12 +88,12 @@ waterline.buildAssociations = function(model) {
 		title: function() {
 			return true
 		},
-		md5_2_password: function (password) {
+		md5_2_password: function(password) {
 			return true
 		},
 		length: function(str, length) {
 			return str.length === length
-		}
+		},
 	});
 	Object.keys(model.attributes).forEach(function(attrName) {
 		var attr = model.attributes[attrName];

@@ -7,7 +7,7 @@ module.exports = [{
 			if (Array.isArray(this.rebates_chain)) {
 				this.rebates_chain.length = 9;
 				this.rebates_chain = this.rebates_chain.map((rebates_chain_item) => {
-					rebates_chain_item||(rebates_chain_item = {});
+					rebates_chain_item || (rebates_chain_item = {});
 					return {
 						// 返利值
 						rebate_value: Math.max(0, parseFloat(rebates_chain_item.rebate_value) || 0),
@@ -28,20 +28,30 @@ module.exports = [{
 			title: "车主称号",
 			type: "text",
 			required: true,
+			defaultsTo: ""
 		},
 		stock: {
 			type: "float",
 			title: "股份",
-			defaultsTo: 0
+			number: function(cb) {
+				cb(isNaN(this.stock = parseFloat(parseFloat(this.stock).toFixed(4))));
+			},
+			defaultsTo: 0,
 		},
 		assist: {
 			type: "float",
 			title: "互助积金",
-			defaultsTo: 0
+			number: function(cb) {
+				cb(isNaN(this.assist = parseFloat(parseFloat(this.assist).toFixed(4))));
+			},
+			defaultsTo: 0,
 		},
 		balance: {
 			type: "float",
 			title: "余额",
+			number: function(cb) {
+				cb(isNaN(this.balance = parseFloat(parseFloat(this.balance).toFixed(4))));
+			},
 			defaultsTo: 0
 		},
 		rebates_chain: {
@@ -70,6 +80,13 @@ module.exports = [{
 			type: "float",
 			defaultsTo: 0,
 			required: true,
-		}
+		},
+		apply_wd_fee_rate: {
+			title: "提现手续费率",
+			type: "float",
+			defaultsTo: 0,
+			max: 1,
+			min: 0
+		},
 	}
 }, ];

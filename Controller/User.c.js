@@ -60,9 +60,26 @@ function install() {
 			});
 		}
 	}
+
+	var get_model_content = co.wrap(function*(model, key) {
+		model[key] = yield classMap.get(("_" + key).camelize()).findOne(model[key]);
+	});
+	User.prototype.getDetails = co.wrap(function*(key) {
+		if (key) {
+
+			var model = this.model.$deepClone();
+			if (String.isString(key)) {
+				yield get_model_content(model, key);
+			} else if (Array.isArray(key)) {
+				yield key.map(key => get_model_content(model, key));
+			}
+			return model;
+		} else {
+			return yield(yield User.getModel()).findOne(this.model.id).populateAll();
+		}
+	});
 	fs.lsAll(__dirname + "/User").forEach(file_path => {
 		var _ext = ".cp.js";
-		console.log(file_path)
 		if (file_path.endWith(_ext)) {
 			console.flag("Install Contrill Proto", file_path);
 			User.prototype.$extends(require(file_path).install(classMap, RedisClient))

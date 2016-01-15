@@ -5,11 +5,11 @@ var Context = require("../socket_handles/context");
 function install(socket, waterline_instance, classMap) {
 	"use strict";
 	var routers = {
-		"prefix": "/admin/user",
+		"prefix": "/admin/withdrawals",
 		"get": {
-			"/list": [{
+			"/apply_users": [{
 				doc: {
-					des: "注册的用户列表",
+					des: "申请提现的用户列表",
 					params: [{
 						name: "[query.num]",
 						can_null: true,
@@ -29,10 +29,6 @@ function install(socket, waterline_instance, classMap) {
 							name: "with_total_info",
 							type: "Boolean",
 							des: "返回的数据中会增加两个字段：total_num（总数量） total_page（总页数）"
-						}, {
-							name: "populate",
-							type: "String, <String>List",
-							des: "要填充的“外键”字段，也可以是多个（数组）。如果填写“*”，则意味则填充所有的外键字段"
 						}]
 					}],
 					returns: [{
@@ -45,47 +41,47 @@ function install(socket, waterline_instance, classMap) {
 						des: "当前页页号"
 					}, {
 						name: "list",
-						type: "<Model.User>List",
-						des: "用户数组数据"
+						type: "Array",
+						des: "申请提现的用户以及申请的旁边信息",
+						attrs: [{
+							name: "user",
+							type: "Model.User",
+							des: "用户信息",
+							attrs: [{
+								name: "asset",
+								type: "Model.Asset",
+								des: "用户资产信息"
+							}]
+						}, {
+							name: "applyAt",
+							type: "DateString",
+							des: "申请时间"
+						}]
 					}]
 				},
 				emit_with: ["session", "query"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
 				var query = data.query;
-				this.body = yield admin_loginer.getUsers(query.num, query.page, query.options)
+				this.body = yield admin_loginer.getWithdrawalsApplyUsers(query.num, query.page, query.options);
 			}]
 		},
-		"post": {
-			"/create_with_member_type/:member_type_id": [{
-				doc: {
-					des: "创建用户，并授予特定会员类型",
-				},
-				emit_with: ["session", "params", "form"]
-			}, function*(data) {
-				var admin_loginer = yield this.admin_loginer;
-				this.body = yield admin_loginer.createUserWithMemberType(data.params.member_type_id, data.form);
-			}]
-		},
+		"post": {},
 		"put": {
-			"/recharge_for_user/:user_id": [{
+			"/pay_for_user/:user_id": [{
 				doc: {
-					des: "⚠ 直接给用户增加余额",
+					des: "商家确认打款给申请提现的用户",
 					params: [{
-						name: "[form.amount]",
-						type: "float",
-						des: "充值的额度"
-					}],
-					returns: [{
-						type: "[Model.Asset]"
-					}],
+						name: "[params.user_id]",
+						des: "用户ID"
+					}]
 				},
-				emit_with: ["session", "params", "form"]
+				emit_with: ["session", "params"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
-				this.body = yield admin_loginer.rechargeForUser(data.params.user_id, data.form.amount);
+				this.body = yield admin_loginer.fulfillUserWithdrawalsApply(data.params.user_id);
 			}]
 		}
-	};
+	}
 	return routers;
 };

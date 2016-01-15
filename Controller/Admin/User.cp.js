@@ -77,6 +77,17 @@ function install(classMap, RedisClient) {
 			return yield UserModel.update(user_id, {
 				status: status
 			});
+		}),
+		getUserById: co.wrap(function*(user_id, is_to_ins) {
+			var user = yield classMap.get("User").findOne(user_id, is_to_ins);
+			if (!user) {
+				throwE("找不到指定用户")
+			}
+			return user
+		}),
+		rechargeForUser: co.wrap(function*(user_id, amount) {
+			var user = yield this.getUserById(user_id, true);
+			return yield user._recharge(amount);
 		})
 	}
 	return proto;

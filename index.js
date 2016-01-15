@@ -20,8 +20,9 @@ function run() {
 			var script_file_name = "v" + package_json.version + ".script.js";
 			var script_file_path = __dirname + "/Script/" + script_file_name;
 			if (fs.existsSync(script_file_path)) {
+				console.flag("RUN SCRIPT", script_file_name);
 				var script_module = require(script_file_path);
-				yield script_module.run(waterline_instance, classMap).then(init_router).catch(e => {
+				yield script_module.run(waterline_instance, classMap).then(init_router, function(e) {
 					console.flag("RUN SCRIPT ERROR", script_file_name);
 					console.error(e);
 					Function.isFunction(script_module.onerror) && script_module.onerror(e);

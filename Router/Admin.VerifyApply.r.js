@@ -41,15 +41,23 @@ function install(socket, waterline_instance, classMap) {
 						des: "当前页页号"
 					}, {
 						name: "list",
-						type: "<Model.User>List",
-						des: "用户数组数据"
+						type: "Array",
+						des: "申请认证的用户以及申请的旁边信息",
+						attrs: [{
+							name: "user",
+							type: "Model.User",
+							des: "用户信息"
+						}, {
+							name: "applyAt",
+							type: "DateString",
+							des: "申请时间"
+						}]
 					}]
 				},
 				emit_with: ["session", "query"]
 			}, function*(data, config) {
 				var admin_loginer = yield this.admin_loginer;
 				var query = data.query;
-				console.log(query)
 				this.body = yield admin_loginer.getVerifyApplyUsers(query.num, query.page, query.options);
 			}],
 		},

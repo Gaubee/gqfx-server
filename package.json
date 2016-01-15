@@ -1,9 +1,10 @@
 {
   "name": "gqfx-server",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "big.js": "^3.1.3",
     "co": "^4.6.0",
     "gq-core": "git+https://github.com/Gaubee/gq-core.git",
     "qiniu": "^6.1.9",
