@@ -58,7 +58,7 @@ function install(classMap, RedisClient) {
 
 			return res;
 		}),
-		createUserWithMemberType: co.wrap(function*(member_type_id, new_user, options) {
+		createUserWithMemberType: co.wrap(function*(member_type_id, new_user_info, options) {
 
 			var MemberTypeCon = classMap.get("MemberType");
 			var member_type = yield MemberTypeCon.findOne(member_type_id);
@@ -66,7 +66,7 @@ function install(classMap, RedisClient) {
 				throwE("找不到指定会员类型")
 			}
 			var UserCon = classMap.get("User");
-			var new_user = yield UserCon.create(new_user);
+			var new_user = yield UserCon.create(new_user_info);
 			var AssetCon = classMap.get("Asset");
 			new_user.asset = yield AssetCon.clone(member_type); // clone
 			return yield new_user.save();
@@ -85,10 +85,34 @@ function install(classMap, RedisClient) {
 			}
 			return user
 		}),
+		// 给用户充值
 		rechargeForUser: co.wrap(function*(user_id, amount) {
 			var user = yield this.getUserById(user_id, true);
 			return yield user._recharge(amount);
-		})
+		}),
+		// 获取用户返利链上的用户
+		getRecommenderChain: co.wrap(function*(user_id, length) {
+			length = parseInt(length, 10) || Infinity;
+			var res = [];
+			var UserCon = classMap.get("User");
+			var UserModel = yield UserCon.getModel();
+			var recommender_id = user_id;
+			var user;
+			do {
+				user = yield UserModel.findOne(recommender_id).populate("asset");
+				if (!user) {
+					if (user_id === recommender_id) { //传进来的可能是手机号码
+						user = yield UserModel.findOneByPhone_number(recommender_id).populate("asset");
+					}
+					if (!user) {
+						break
+					}
+				}
+				res.push(user);
+				recommender_id = user.recommender;
+			} while (recommender_id);
+			return res;
+		}),
 	}
 	return proto;
 }

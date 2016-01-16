@@ -35,6 +35,13 @@ function install(socket, waterline_instance, classMap) {
 			}]
 		},
 		"post": {
+			"/create_user_with_membertype/:member_type_id": [{
+				doc: {},
+				emit_with: ["session", "params", "form"]
+			}, function*(data) {
+				var user_loginer = yield this.user_loginer;;
+				this.body = yield user_loginer.createUserWithMemberType(data.params.member_type_id, data.form);
+			}],
 			"/register_from_recommender/:recommender_id": [{
 				doc: {
 					des: "推荐新用户注册",

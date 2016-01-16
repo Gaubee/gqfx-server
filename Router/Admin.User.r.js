@@ -54,6 +54,23 @@ function install(socket, waterline_instance, classMap) {
 				var admin_loginer = yield this.admin_loginer;
 				var query = data.query;
 				this.body = yield admin_loginer.getUsers(query.num, query.page, query.options)
+			}],
+			"/recommender_chain/:user_id": [{
+				doc: {
+					des: "获取用户的返利链上的用户",
+					params: [{
+						name: "[params.user_id]",
+						des: "起点的用户"
+					}],
+					returns: [{
+						name: "<Model.User>List",
+						des: "推荐者链用户集"
+					}]
+				},
+				emit_with: ["session", "params"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				this.body = yield admin_loginer.getRecommenderChain(data.params.user_id);
 			}]
 		},
 		"post": {
@@ -65,6 +82,20 @@ function install(socket, waterline_instance, classMap) {
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
 				this.body = yield admin_loginer.createUserWithMemberType(data.params.member_type_id, data.form);
+			}],
+			"/login_as_user/:user_id": [{
+				doc: {
+					des: "管理员直接登录成某用户",
+					params: [{
+						name: "[params.user_id]",
+						des: "要登录的用户ID"
+					}]
+				},
+				emit_with: ["session", "params"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				this.session.user_loginer_id = data.params.user_id;
+				this.body = yield this.user_loginer;
 			}]
 		},
 		"put": {

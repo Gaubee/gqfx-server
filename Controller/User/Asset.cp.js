@@ -12,8 +12,7 @@ function install(classMap, RedisClient) {
 				this.model.asset = asset.id;
 				yield this.model.save()
 			} else {
-				console.log(this.model.asset)
-				asset = yield AssetCon.findOne(this.model.asset)
+				asset = yield AssetCon.findOne(this.model.asset.id || this.model.asset)
 			}
 			return asset;
 		}),

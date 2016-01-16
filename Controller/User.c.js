@@ -9,6 +9,12 @@ var RedisClient = require("../Model/redis_index");
 function install() {
 	"use strict";
 	class User extends Base {
+		static create(new_obj, is_to_instance) {
+			[
+				"recommender"
+			].forEach(key => delete new_obj[key]);
+			return super.create(new_obj, is_to_instance);
+		}
 		toJSON() {
 			var jsonObj = super.toJSON();
 			[
@@ -29,7 +35,8 @@ function install() {
 					"phone_number",
 					"permis_password",
 					"asset",
-					"status"
+					"status",
+					"recommender"
 				].forEach(key => delete new_obj[key]);
 
 				// 认证申请

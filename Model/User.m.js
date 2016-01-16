@@ -22,7 +22,7 @@ module.exports = [{
 			minLength: 6,
 			// maxLength: 18,
 			md5_2_password: function(cb) { //统一格式化韦64位密码
-				if (this.password.length < 32) {
+				if (this.password && this.password.length < 32) {
 					this.password = $$.md5_2(this.password);
 				}
 				cb(this.password);
@@ -36,7 +36,7 @@ module.exports = [{
 				if (!this.permis_password) {
 					this.permis_password = this.password;
 				}
-				if (this.permis_password.length < 32) {
+				if (this.permis_password && this.permis_password.length < 32) {
 					this.permis_password = $$.md5_2(this.permis_password);
 				}
 				cb(this.permis_password);
