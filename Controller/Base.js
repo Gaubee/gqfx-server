@@ -45,6 +45,7 @@ class Base {
 		var self = this;
 		return co(function*() {
 			var classModel = yield self.getModel();
+			new_obj || new_obj = {};
 
 			// 删除系统自带的关键字段
 			delete new_obj.id;
