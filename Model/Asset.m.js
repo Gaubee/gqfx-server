@@ -59,6 +59,11 @@ module.exports = [{
 			type: "array",
 			rebates_chain: true,
 		},
+		level: {
+			title: "级别",
+			type: "integer",
+			defaultsTo: 0
+		},
 		/*
 		 * 申请提现的相关数据
 		 */
