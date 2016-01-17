@@ -1,15 +1,10 @@
 var co = require("co");
 
 var ScriptTools = require("./script_tools");
-var backuper = ScriptTools.DbBackUp("2.1.3");
+var backuper = ScriptTools.DbBackUp("2.1.4");
 
 var run = co.wrap(function*(waterline_instance, classMap) {
 	yield backuper.backup();
-	/*
-	 * 1.4.1 版本中
-	 * Model.Asset 增加了申请提现相关的字段，需要刷新Asset表
-	 * Model.MemberType 增加了价格字段，需要刷新MemberType表
-	 */
 
 	console.group("开始执行数据库升级");
 	var tables = ["asset", "member_type"];

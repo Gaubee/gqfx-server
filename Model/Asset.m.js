@@ -9,6 +9,8 @@ module.exports = [{
 				this.rebates_chain = this.rebates_chain.map((rebates_chain_item) => {
 					rebates_chain_item || (rebates_chain_item = {});
 					return {
+						// 等级
+						level: parseInt(rebates_chain_item.level, 10) || 0,
 						// 返利值
 						rebate_value: Math.max(0, parseFloat(rebates_chain_item.rebate_value) || 0),
 						// 互助基金抽取率（从返利值中扣除）
