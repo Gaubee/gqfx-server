@@ -27,8 +27,8 @@ module.exports = [{
 		car_flag: {
 			title: "车主称号",
 			type: "text",
+			defaultsTo: "\0",
 			required: true,
-			defaultsTo: ""
 		},
 		stock: {
 			type: "float",
