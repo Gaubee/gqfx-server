@@ -23,7 +23,7 @@
     "url": "git+https://github.com/Gaubee/gqfx-server.git"
   },
   "author": "Gaubee",
-  "license": "ISC",
+  "license": "GPL",
   "bugs": {
     "url": "https://github.com/Gaubee/gqfx-server/issues"
   },
