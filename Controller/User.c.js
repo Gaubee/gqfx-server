@@ -6,7 +6,7 @@ var Base = require("./Base");
 var classMap = require("./index").classMap;
 var RedisClient = require("../Model/redis_index");
 
-function install() {
+function install(waterline_instance) {
 	"use strict";
 	class User extends Base {
 		static create(new_obj, is_to_instance) {
@@ -84,21 +84,24 @@ function install() {
 		}
 	}
 
-	var get_model_content = co.wrap(function*(model, key) {
-		model[key] = yield classMap.get(("_" + key).camelize()).findOne(model[key]);
+	var get_model_content = co.wrap(function*(model, key_define, key) {
+		if (model[key]) {
+			model[key] = yield classMap.get(("_" + (key_define.model || key_define.collection)).camelize()).findOne(model[key], true /*获取实例，不同类中可能有不同的字段要隐藏*/ );
+		}
 	});
 	User.prototype.getDetails = co.wrap(function*(key) {
-		if (key && key !== "*") {
-			var model = this.model.$deepClone();
-			if (String.isString(key)) {
-				yield get_model_content(model, key);
-			} else if (Array.isArray(key)) {
-				yield key.map(key => get_model_content(model, key));
-			}
-			return model;
-		} else {
-			return yield(yield User.getModel()).findOne(this.model.id).populateAll();
+		var user_definition = waterline_instance.collections.user.definition;
+		var model = this.model.$deepClone();
+		if (!key || key === "*") {
+			key = Object.keys(user_definition).filter(attr_name => user_definition[attr_name].alias);
+		} else if (String.isString(key) && user_definition[key].alias) {
+			key = [key]
 		}
+		console.log(key)
+		if (Array.isArray(key)) {
+			yield key.map(key => get_model_content(model, user_definition[key], key));
+		}
+		return model;
 	});
 	User.prototype._checkVerify = function() {
 		if (this.model.auth_status !== "已认证") {
