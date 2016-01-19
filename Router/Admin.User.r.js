@@ -71,6 +71,16 @@ function install(socket, waterline_instance, classMap) {
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
 				this.body = yield admin_loginer.getRecommenderChain(data.params.user_id);
+			}],
+			"/search": [{
+				doc: {
+					des: "搜索用户",
+					params: []
+				},
+				emit_with: ["session", "query"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				this.body = yield admin_loginer.searchUsers(data.query);
 			}]
 		},
 		"post": {

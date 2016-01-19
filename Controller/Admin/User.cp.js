@@ -16,7 +16,7 @@ function install(classMap, RedisClient) {
 			var UserModel = yield UserCon.getModel();
 
 			// 查询标准对象
-			var criteria = null;
+			var criteria = options.where;
 
 			// 初始化查询对象
 			var find_query = UserModel.find();
@@ -55,6 +55,59 @@ function install(classMap, RedisClient) {
 				res.total_num = total_num;
 				res.total_page = total_page;
 			}
+
+			return res;
+		}),
+		//用户查询
+		searchUsers: co.wrap(function*(search_options) {
+			if (!search_options) {
+				return [];
+			}
+			var UserCon = classMap.get("User");
+			var UserModel = yield UserCon.getModel();
+			var res = {};
+
+			//执行查询
+			var criteria = search_options.criteria;
+			try {
+				criteria = JSON.parse(criteria);
+			} catch (e) {
+				throwE("criteria parse Error, " + e.message);
+			}
+
+			var find_query = UserModel.find(criteria);
+			var userModelList = yield find_query;
+			// console.log(criteria,userModelList)
+
+			//过滤查询结果，把空的查询结果给过滤掉
+			if (Array.isArray(criteria.joins)) {
+				criteria.joins.forEach(join => {
+					userModelList = userModelList.filter(userModel => userModel[join.child])
+				})
+			}
+			console.log(search_options)
+
+
+			var num = parseInt(search_options.num, 10) || 0;
+			var page = parseInt(search_options.page, 10) || 0;
+			var start = num * page;
+			var end = num * (page + 1) - 1;
+			// 分页信息
+			if (search_options.with_total_info) {
+				var total_num = userModelList.length;
+				if (num && total_num) {
+					var total_page = Math.ceil(total_num / num);
+				} else {
+					total_page = 1;
+				}
+				res.total_num = total_num;
+				res.total_page = total_page;
+			}
+			//分页切片
+			userModelList = userModelList.page(num, page);
+			res.num = num || userModelList.length;
+			res.page = page;
+			res.list = userModelList;
 
 			return res;
 		}),

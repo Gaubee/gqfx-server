@@ -11,9 +11,25 @@ function install() {
 	class User extends Base {
 		static create(new_obj, is_to_instance) {
 			[
-				"recommender"
+				"register_id",
+				"auth_status",
+				"asset",
+				"status",
+				"recommender",
 			].forEach(key => delete new_obj[key]);
-			return super.create(new_obj, is_to_instance);
+			var self = this;
+			var create = super.create;
+
+			return co(function*() {
+				var UserModel = yield self.getModel();
+				// 不以4结尾
+				do {
+					var no_endWith_4_register_id = (Math.random().toString().substr(2) + Math.random().toString().substr(2)).substring(0, 8);
+				} while (no_endWith_4_register_id.charAt(7) === 4 || (yield UserModel.findOneByRegister_id(no_endWith_4_register_id)))
+				new_obj.register_id = no_endWith_4_register_id;
+
+				return create.call(self, new_obj, is_to_instance);
+			});
 		}
 		toJSON() {
 			var jsonObj = super.toJSON();
@@ -72,8 +88,7 @@ function install() {
 		model[key] = yield classMap.get(("_" + key).camelize()).findOne(model[key]);
 	});
 	User.prototype.getDetails = co.wrap(function*(key) {
-		if (key) {
-
+		if (key && key !== "*") {
 			var model = this.model.$deepClone();
 			if (String.isString(key)) {
 				yield get_model_content(model, key);
@@ -85,6 +100,11 @@ function install() {
 			return yield(yield User.getModel()).findOne(this.model.id).populateAll();
 		}
 	});
+	User.prototype._checkVerify = function() {
+		if (this.model.auth_status !== "已认证") {
+			throwE("用户未通过认证，无权操作")
+		}
+	};
 	fs.lsAll(__dirname + "/User").forEach(file_path => {
 		var _ext = ".cp.js";
 		if (file_path.endWith(_ext)) {

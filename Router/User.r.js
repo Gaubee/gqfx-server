@@ -27,11 +27,16 @@ function install(socket, waterline_instance, classMap) {
 			"/loginer": [{
 				doc: {
 					des: "获取已经登录的用户",
-					params: []
+					params: [{
+						name: "[query.populate]",
+						type: "String, <String>List",
+						des: "要填充的“外键”字段，也可以是多个（数组）。如果填写“*”，则意味则填充所有的外键字段"
+					}]
 				},
-				emit_with: ["session"]
+				emit_with: ["session", "query"]
 			}, function*(data, config) {
-				this.body = yield this.user_loginer;
+				var user_loginer = yield this.user_loginer;
+				this.body = data.query.populate ? (yield user_loginer.getDetails(data.query.populate)) : user_loginer;
 			}]
 		},
 		"post": {
