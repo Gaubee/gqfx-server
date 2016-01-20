@@ -108,6 +108,12 @@ function install(waterline_instance) {
 			throwE("用户未通过认证，无权操作")
 		}
 	};
+	User.prototype._checkPermisPassword = function(pwd) {
+		if (this.model.permis_password !== $$.md5_2(pwd)) {
+			throwE("二级密码错误")
+		}
+		return true
+	};
 	fs.lsAll(__dirname + "/User").forEach(file_path => {
 		var _ext = ".cp.js";
 		if (file_path.endWith(_ext)) {
