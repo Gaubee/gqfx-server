@@ -23,9 +23,6 @@ function install(socket, waterline_instance, classMap) {
 				emit_with: ["session", "form"]
 			}, function*(data) {
 				var user_loginer = yield this.user_loginer;
-				if (!data.form.permis_password) {
-					throwE("需要二级密码")
-				}
 				user_loginer._checkPermisPassword(data.form.permis_password);
 				this.body = yield user_loginer.applyWithdrawals(data.form.amount);
 			}]

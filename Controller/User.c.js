@@ -28,14 +28,15 @@ function install(waterline_instance) {
 				} while (no_endWith_4_register_id.charAt(7) === 4 || (yield UserModel.findOneByRegister_id(no_endWith_4_register_id)))
 				new_obj.register_id = no_endWith_4_register_id;
 
+				if (!new_obj.hasOwnProperty("permis_password")) {
+					new_obj.password = new_obj.permis_password;
+				}
+
 				return create.call(self, new_obj, is_to_instance);
 			});
 		}
 		toJSON() {
 			var jsonObj = super.toJSON();
-			console.log("jsonObj:", jsonObj);
-
-			
 			[
 				"password",
 				"permis_password",
@@ -112,6 +113,12 @@ function install(waterline_instance) {
 		}
 	};
 	User.prototype._checkPermisPassword = function(pwd) {
+		if (!this.model.permis_password) {
+			throwE("二级密码未设定")
+		}
+		if (!pwd) {
+			throwE("请输入二级密码");
+		}
 		if (this.model.permis_password !== $$.md5_2(pwd)) {
 			throwE("二级密码错误")
 		}
