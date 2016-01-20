@@ -179,17 +179,24 @@ function install(classMap, RedisClient) {
 				}
 			});
 			// 所有用户以及资本信息拿出来
-			yield all_users = classMap.get("User").find({}, true).getDetauls("asset");
+			yield all_users = classMap.get("User").find({}, true);
 			// 统计已经发放的所有股份
 			var all_stock = 0;
 			var shareholder_list = [];
-			all_users.forEach(function(user) {
-				if (user.asset.stock) {
-					all_stock += user.asset.stock;
-					shareholder_list.push(user)
+			yield all_users.map(co.wrap(function*(user) {
+				var asset = yield user.getAsset();
+				if (asset && asset.stock) {
+					all_stock += asset.stock;
+					shareholder_list.push({
+						user: user,
+						asset: asset
+					})
 				}
+			}));
+			// 均分红利
+			yield shareholder_list.map(function(user) {
+				return 
 			});
-			// 均分股份
 		})
 	}
 	return proto;

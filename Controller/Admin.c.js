@@ -15,7 +15,7 @@ function install() {
 		var _ext = ".cp.js";
 		if (file_path.endWith(_ext)) {
 			console.flag("Install Contrill Proto", file_path);
-			Admin.prototype.$extends(require(file_path).install(classMap, RedisClient))
+			Admin.prototype.$extends(require(file_path).install(classMap, RedisClient, Admin))
 		}
 	});
 
