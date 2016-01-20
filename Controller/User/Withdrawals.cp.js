@@ -27,9 +27,12 @@ function install(classMap, RedisClient) {
 			var redis_client = yield RedisClient.getClient();
 			yield redis_client.thunk.ZADD(["Admin.WithdrawalsApply", Date.now(), this.model.id]);
 
+			var admin_config = yield classMap.get("Admin").getConfig();
 			asset.apply_wd_status = "用户已申请";
 			asset.balance -= amount;
 			asset.apply_wd_amount = amount;
+			asset.apply_wd_fee = amount * admin_config.提现费率;
+			asset.apply_wd_money = amount - asset.apply_wd_fee;
 			var res = yield asset.save();
 
 			/*LOG*/
@@ -38,7 +41,9 @@ function install(classMap, RedisClient) {
 				type: "apply-withdrawals",
 				log: "用户申请提现",
 				data: {
-					amount: amount
+					amount: asset.apply_wd_amount,
+					fee: asset.apply_wd_fee,
+					money: asset.apply_wd_money
 				}
 			});
 			return res;
@@ -55,9 +60,17 @@ function install(classMap, RedisClient) {
 				}
 				throwE("用户申请提现的状态值有误，无法确认提现到帐")
 			}
+			var log = { //备份日志
+				amount: asset.apply_wd_amount,
+				fee: asset.apply_wd_fee,
+				money: asset.apply_wd_money
+			};
+
 			asset_model.apply_wd_status = "用户未申请";
-			var apply_wd_amount = asset_model.apply_wd_totle_amount += asset_model.apply_wd_amount;
+			asset_model.apply_wd_totle_amount += asset_model.apply_wd_amount;
 			asset_model.apply_wd_amount = 0;
+			asset_model.apply_wd_fee = 0;
+			asset_model.apply_wd_money = 0;
 			var res = yield asset_model.save();
 
 			/*LOG*/
@@ -65,10 +78,7 @@ function install(classMap, RedisClient) {
 				owner: this.model.id,
 				type: "confirm-withdrawals-arrive",
 				log: "确认申请提现到帐",
-				data: {
-					amount: apply_wd_amount,
-					after_totle_amount: asset_model.apply_wd_totle_amount
-				}
+				data: log
 			});
 			return res;
 		})

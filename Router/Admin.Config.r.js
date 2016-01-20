@@ -17,7 +17,7 @@ function install(socket, waterline_instance, classMap) {
 				emit_with: ["session"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
-				this.body = yield admin_loginer.getConfig()
+				this.body = yield admin_loginer.constructor.getConfig();
 			}],
 		},
 		"put": {
@@ -35,8 +35,9 @@ function install(socket, waterline_instance, classMap) {
 				},
 				emit_with: ["session", "form"]
 			}, function*(data) {
+				console.log(data,data.form)
 				var admin_loginer = yield this.admin_loginer;
-				this.body = yield admin_loginer.setConfig(data.form);
+				this.body = yield admin_loginer.constructor.setConfig(data.form);
 			}]
 		}
 	};

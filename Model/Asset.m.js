@@ -90,6 +90,16 @@ module.exports = [{
 			defaultsTo: 0,
 			required: true,
 		},
+		apply_wd_fee: {
+			title: "申请提现的手续费",
+			type: "float",
+			defaultsTo: 0
+		},
+		apply_wd_money: {
+			title: "申请提现的最终获取的金额",
+			type: "float",
+			defaultsTo: 0
+		},
 		apply_wd_totle_amount: {
 			title: "历史申请提现的总和额度",
 			type: "float",
