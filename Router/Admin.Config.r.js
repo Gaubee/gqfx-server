@@ -23,7 +23,7 @@ function install(socket, waterline_instance, classMap) {
 		"put": {
 			"": [{
 				doc: {
-					des: "⚠ 直接给用户增加余额",
+					des: "修改设定管理员全局配置",
 					params: config_keys.map(key => {
 						return {
 							name: "[form." + key.name + "]",
