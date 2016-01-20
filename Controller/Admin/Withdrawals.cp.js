@@ -73,6 +73,16 @@ function install(classMap, RedisClient) {
 			var user_data = user.toJSON();
 			user_data.asset = asset_model;
 
+			/*LOG*/
+			yield classMap.get("AdminLog").create({
+				owner: this.model.id,
+				type: "fulfill-user-withdrawals-apply",
+				log: "商家打款给申请提现的用户",
+				data: {
+					amount: asset_model.apply_wd_amount,
+					user_id: user_id
+				}
+			});
 			return user_data;
 		}),
 	};

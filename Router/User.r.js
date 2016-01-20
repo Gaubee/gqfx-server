@@ -112,14 +112,14 @@ function install(socket, waterline_instance, classMap) {
 					user_name: loginer_info.login_name
 				}, {
 					register_id: loginer_info.login_name
-				}]);
+				}], true);
 				if (!loginer) {
 					throwE("找不到指定用户，请检查登录帐号")
 				}
-				if (!loginer_info.password || loginer.password !== $$.md5_2(loginer_info.password)) {
+				if (!loginer_info.password || loginer.model.password !== $$.md5_2(loginer_info.password)) {
 					throwE("登录密码错误")
 				}
-				this.session.user_loginer_id = loginer.id;
+				this.session.user_loginer_id = loginer.model.id;
 				this.body = loginer;
 			}]
 		},

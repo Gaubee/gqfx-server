@@ -88,8 +88,10 @@ waterline.buildAssociations = function(model) {
 		title: function() {
 			return true
 		},
-		md5_2_password: function(password) {
-			return true
+		md5_2_password: function(old_value, new_value) {
+			// console.log(arguments.caller.toString());
+			// console.log("md5_2_password:", arguments)
+			return new_value && new_value.length === 64
 		},
 		length: function(str, length) {
 			return str.length === length

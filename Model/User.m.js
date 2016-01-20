@@ -33,14 +33,18 @@ module.exports = [{
 			type: "string",
 			minLength: 6,
 			md5_2_password: function(cb) { //统一格式化韦64位密码
-				if (!this.permis_password) {
-					this.permis_password = this.password;
-				}
+				// if (!this.permis_password) {
+				// 	this.permis_password = this.password;
+				// }
 				if (this.permis_password && this.permis_password.length < 32) {
 					this.permis_password = $$.md5_2(this.permis_password);
 				}
+				// console.log('permis_password:', this.permis_password/*, this.password*/)
+				// return this.permis_password
+				// console.log(cb.toString())
 				cb(this.permis_password);
 			},
+			// required: true,
 		},
 		/*
 		 * 基本资料

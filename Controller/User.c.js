@@ -33,6 +33,9 @@ function install(waterline_instance) {
 		}
 		toJSON() {
 			var jsonObj = super.toJSON();
+			console.log("jsonObj:", jsonObj);
+
+			
 			[
 				"password",
 				"permis_password",

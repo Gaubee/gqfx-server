@@ -166,6 +166,31 @@ function install(classMap, RedisClient) {
 			} while (recommender_id);
 			return res;
 		}),
+		// 发放红利
+		payDividends: co.wrap(function*(amount, task_id) {
+			/*LOG*/
+			yield classMap.get("AdminLog").create({
+				owner: this.model.id,
+				type: "pay-Dividends",
+				log: "发放红利",
+				data: {
+					amount: amount,
+					task_id: task_id
+				}
+			});
+			// 所有用户以及资本信息拿出来
+			yield all_users = classMap.get("User").find({}, true).getDetauls("asset");
+			// 统计已经发放的所有股份
+			var all_stock = 0;
+			var shareholder_list = [];
+			all_users.forEach(function(user) {
+				if (user.asset.stock) {
+					all_stock += user.asset.stock;
+					shareholder_list.push(user)
+				}
+			});
+			// 均分股份
+		})
 	}
 	return proto;
 }

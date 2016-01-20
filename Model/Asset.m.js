@@ -40,6 +40,14 @@ module.exports = [{
 			},
 			defaultsTo: 0,
 		},
+		dividend: {
+			type: "float",
+			title: "分红",
+			number: function(cb) {
+				cb(isNaN(this.stock = parseFloat(parseFloat(this.stock).toFixed(4))));
+			},
+			defaultsTo: 0,
+		},
 		assist: {
 			type: "float",
 			title: "互助积金",

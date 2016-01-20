@@ -9,8 +9,8 @@ var RedisClient = require("../Model/redis_index");
 
 function install() {
 	"use strict";
-	class Asset extends Base {
+	class AdminLog extends Base {
 
 	};
-	return Asset
+	return AdminLog
 };
