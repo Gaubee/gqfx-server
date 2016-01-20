@@ -31,16 +31,16 @@ function install(socket, waterline_instance, classMap) {
 			"/confirm_arrive": [{
 				doc: {
 					des: "用户确认到帐",
-					params: [{
+					params: [/*{
 						name: "[form.permis_password]",
 						type: "string",
 						des: "二级密码"
-					}],
+					}*/],
 				},
-				emit_with: ["session", "form"]
+				emit_with: ["session"/*, "form"*/]
 			}, function*(data) {
 				var user_loginer = yield this.user_loginer;
-				user_loginer._checkPermisPassword(data.form.permis_password);
+				// user_loginer._checkPermisPassword(data.form.permis_password);
 				this.body = yield user_loginer.confirmWithdrawalsArrive();
 			}]
 		}
