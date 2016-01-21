@@ -6,6 +6,9 @@ function install(classMap, RedisClient) {
 	var proto = {
 		// 申请提现
 		applyWithdrawals: co.wrap(function*(amount) {
+			// 校验是否通过认证
+			this._checkVerify();
+
 			amount = parseFloat(amount) || 0;
 			if (!amount || amount <= 0) {
 				throwE("申请的提款额度有误")

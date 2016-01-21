@@ -16,11 +16,23 @@ function install(classMap, RedisClient) {
 			return asset;
 		}),
 		//充值
-		_recharge: co.wrap(function*(amount) {
+		_recharge: co.wrap(function*(amount, log_msg) {
 			amount = parseFloat(amount) || 0;
 			var asset = yield this.getAsset();
 			asset.balance += amount;
-			return yield asset.save();
+
+			var res = yield asset.save();
+
+			/*LOG*/
+			yield classMap.get("UserLog").create({
+				owner: this.model.id,
+				type: "user-recharge",
+				log: log_msg || "用户充值",
+				data: {
+					amount: amount,
+				}
+			});
+			return res;
 		})
 	};
 	return proto;

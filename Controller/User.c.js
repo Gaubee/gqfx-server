@@ -95,7 +95,7 @@ function install(waterline_instance) {
 	});
 	User.prototype.getDetails = co.wrap(function*(key) {
 		var user_definition = waterline_instance.collections.user.definition;
-		var model = this.model.$deepClone();
+		var model = this.toJSON();
 		if (!key || key === "*") {
 			key = Object.keys(user_definition).filter(attr_name => user_definition[attr_name].alias);
 		} else if (String.isString(key) && user_definition[key].alias) {
@@ -111,6 +111,7 @@ function install(waterline_instance) {
 		if (this.model.auth_status !== "已认证") {
 			throwE("用户未通过认证，无权操作")
 		}
+		return true;
 	};
 	User.prototype._checkPermisPassword = function(pwd) {
 		if (!this.model.permis_password) {
