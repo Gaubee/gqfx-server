@@ -11,9 +11,6 @@ function install(classMap, RedisClient) {
 				throwE("申请的提款额度有误")
 			}
 			var asset = yield this.getAsset();
-			if (asset.balance < amount) {
-				throwE("余额不足，申请提现失败");
-			}
 			if (asset.apply_wd_status !== "用户未申请") {
 				if (asset.apply_wd_status === "用户已申请") {
 					throwE("用户已经申请提现")
@@ -30,9 +27,13 @@ function install(classMap, RedisClient) {
 			var admin_config = yield classMap.get("Admin").getConfig();
 			asset.apply_wd_status = "用户已申请";
 			asset.balance -= amount;
-			asset.apply_wd_amount = amount;
+			asset.apply_wd_money = amount
 			asset.apply_wd_fee = amount * admin_config.提现费率;
-			asset.apply_wd_money = amount - asset.apply_wd_fee;
+			asset.apply_wd_amount = asset.apply_wd_money + asset.apply_wd_fee;
+
+			if (asset.balance < asset.apply_wd_amount) {
+				throwE("余额不足，申请提现失败");
+			}
 			var res = yield asset.save();
 
 			/*LOG*/
