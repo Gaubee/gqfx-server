@@ -14,10 +14,10 @@ function install(socket, waterline_instance, classMap) {
 					params: [],
 					returns: config_keys
 				},
-				emit_with: ["session"]
+				emit_with: [/*"session"*/]
 			}, function*(data) {
-				var admin_loginer = yield this.admin_loginer;
-				this.body = yield admin_loginer.constructor.getConfig();
+				// var admin_loginer = yield this.admin_loginer;
+				this.body = yield classMap.get("Admin").getConfig();
 			}],
 		},
 		"put": {
