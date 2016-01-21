@@ -62,9 +62,9 @@ function install(classMap, RedisClient) {
 				throwE("用户申请提现的状态值有误，无法确认提现到帐")
 			}
 			var log = { //备份日志
-				amount: asset.apply_wd_amount,
-				fee: asset.apply_wd_fee,
-				money: asset.apply_wd_money
+				amount: asset_model.apply_wd_amount,
+				fee: asset_model.apply_wd_fee,
+				money: asset_model.apply_wd_money
 			};
 
 			asset_model.apply_wd_status = "用户未申请";
