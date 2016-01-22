@@ -123,11 +123,10 @@ function install(socket, waterline_instance, classMap) {
 
 				/*LOG*/
 				yield classMap.get("UserLog").create({
-					owner: this.model.id,
+					owner: loginer.model.id,
 					type: "apply-withdrawals",
 					log: `用户登录`,
-					data: {
-					}
+					data: {}
 				});
 				this.body = loginer;
 			}]
