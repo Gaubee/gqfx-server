@@ -125,6 +125,14 @@ function install(waterline_instance) {
 		}
 		return true
 	};
+	User.prototype.changePassword = co.wrap(function*(old_pwd, new_pwd) {
+		if (this.model.password !== $$.md5_2(old_pwd)) {
+			throwE("登录密码错误")
+		}
+		this.model.password = new_pwd;
+		yield this.model.save();
+		return this;
+	});
 	fs.lsAll(__dirname + "/User").forEach(file_path => {
 		var _ext = ".cp.js";
 		if (file_path.endWith(_ext)) {

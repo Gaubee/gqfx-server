@@ -1,6 +1,7 @@
 exports.install = install;
 var co = require("co");
 var Context = require("../socket_handles/context");
+var RedisClient = require("../Model/redis_index");
 
 function install(socket, waterline_instance, classMap) {
 	"use strict";
@@ -37,7 +38,23 @@ function install(socket, waterline_instance, classMap) {
 			}, function*(data, config) {
 				var user_loginer = yield this.user_loginer;
 				this.body = data.query.populate ? (yield user_loginer.getDetails(data.query.populate)) : user_loginer;
-			}]
+			}],
+			"/store_vode/:phone_number": [{
+				doc: {
+					des: "⚠ 模拟发送验证吗",
+					params: [{
+						name: "[query.store_key]",
+					}],
+				},
+				emit_with: ["query", "params"]
+			}, function*(data) {
+				var redis_client = yield RedisClient.getClient();
+				var vcode = Math.random().toString(36).substr(2, 6);
+				if (data.query.store_key) {
+					yield redis_client.thunk.SETEX([`vcode-${data.query.store_key}-${data.params.phone_number}`, 120, vcode]);
+				}
+				this.body = vcode;
+			}],
 		},
 		"post": {
 			"/create_user_with_membertype/:member_type_id": [{
@@ -153,7 +170,130 @@ function install(socket, waterline_instance, classMap) {
 				var user_loginer = yield this.user_loginer;
 				yield user_loginer.update(data.form, data.query);
 				this.body = user_loginer;
-			}]
+			}],
+			"/update_password": [{
+				doc: {
+					des: "用户修改登录密码",
+					params: [{
+						name: "[form.old_pwd]",
+						type: "String",
+						des: "旧登录密码"
+					}, {
+						name: "[form.new_pwd]",
+						type: "String",
+						des: "新登录密码"
+					}]
+				},
+				emit_with: ["session", "form"]
+			}, function*(data) {
+				var user_loginer = yield this.user_loginer;
+				var res = yield user_loginer.changePassword(data.form.old_pwd, data.form.new_pwd);
+
+				/*LOG*/
+				yield classMap.get("UserLog").create({
+					owner: user_loginer.model.id,
+					type: "user-update-password",
+					log: `用户修改密码`,
+					data: { /*为了确保安全，不保留任何密码信息*/ }
+				});
+				this.body = res;
+			}],
+			"/reset_password": [{
+				doc: {
+					des: "用户重置密码",
+					params: [{
+						name: "[form.security_code]",
+						type: "String",
+						des: "验证码"
+					}, {
+						name: "[form.phone_number]",
+						type: "String",
+						des: "手机号码"
+					}, {
+						name: "[form.new_pwd]",
+						type: "String",
+						des: "新登录密码"
+					}]
+				},
+				emit_with: ["form"]
+			}, function*(data) {
+				var redis_client = yield RedisClient.getClient();
+				var form = data.form
+				var vcode = yield redis_client.thunk.get(`vcode-reset_password-${form.phone_number}`);
+				if (!vcode) {
+					throwE("验证码已过期")
+				}
+				if (vcode !== form.security_code) {
+					throwE("验证码错误")
+				}
+				var UserCon = classMap.get("User");
+				var user_model = yield UserCon.findOne({
+					phone_number: form.phone_number
+				});
+				if (!user_model) {
+					throwE("找不到指定用户");
+				}
+				user_model.password = form.new_pwd;
+				yield user_model.save();
+				var user = yield UserCon.getInstance(user_model);
+
+				/*LOG*/
+				yield classMap.get("UserLog").create({
+					owner: user_model.id,
+					type: "user-reset-password",
+					log: `用户重置登录密码`,
+					data: { /*为了确保安全，不保留任何密码信息*/ }
+				});
+				this.body = user;
+			}],
+			"/reset_permis_password": [{
+				doc: {
+					des: "用户重置密码",
+					params: [{
+						name: "[form.security_code]",
+						type: "String",
+						des: "验证码"
+					}, {
+						name: "[form.phone_number]",
+						type: "String",
+						des: "手机号码"
+					}, {
+						name: "[form.new_pwd]",
+						type: "String",
+						des: "新登录密码"
+					}]
+				},
+				emit_with: ["form"]
+			}, function*(data) {
+				var redis_client = yield RedisClient.getClient();
+				var form = data.form;
+				var vcode = yield redis_client.thunk.get(`vcode-reset_permis_password-${form.phone_number}`);
+				if (!vcode) {
+					throwE("验证码已过期")
+				}
+				if (vcode !== form.security_code) {
+					throwE("验证码错误")
+				}
+				var UserCon = classMap.get("User");
+				var user_model = yield UserCon.findOne({
+					phone_number: form.phone_number
+				});
+				if (!user_model) {
+					throwE("找不到指定用户");
+				}
+				user_model.permis_password = form.new_pwd;
+				yield user_model.save();
+				var user = yield UserCon.getInstance(user_model);
+
+				/*LOG*/
+				yield classMap.get("UserLog").create({
+					owner: user_model.id,
+					type: "user-reset-permis_password",
+					log: `用户重置二级密码`,
+					data: { /*为了确保安全，不保留任何密码信息*/ }
+				});
+				this.body = user;
+			}],
 		},
 		"delete": {
 			"/login_out": [{
