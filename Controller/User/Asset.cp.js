@@ -27,7 +27,7 @@ function install(classMap, RedisClient) {
 			yield classMap.get("UserLog").create({
 				owner: this.model.id,
 				type: "user-recharge",
-				log: log_msg || "用户充值",
+				log: log_msg || `用户充值，额度：${amount}`,
 				data: {
 					amount: amount,
 				}

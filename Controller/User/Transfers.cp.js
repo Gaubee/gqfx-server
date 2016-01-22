@@ -19,6 +19,9 @@ function install(classMap, RedisClient) {
 			if (!payee) {
 				throwE("找不到指定收款人")
 			}
+			if (payee.model.id === this.model.id) {
+				throwE("禁止转账到自己账户上")
+			}
 
 			var asset = yield this.getAsset();
 			var admin_config = yield classMap.get("Admin").getConfig();
@@ -35,8 +38,8 @@ function install(classMap, RedisClient) {
 			/*LOG*/
 			yield classMap.get("UserLog").create({
 				owner: this.model.id,
-				type: "Transfers-To-User",
-				log: "用户转账",
+				type: "transfers-to-user",
+				log: `用户转账给${payee.model.phone_number}，额度:${amount}`,
 				data: {
 					payee: {
 						id: payee.model.id,
@@ -57,8 +60,8 @@ function install(classMap, RedisClient) {
 			/*LOG*/
 			yield classMap.get("UserLog").create({
 				owner: this.model.id,
-				type: "Receipt-from-user",
-				log: "用户申请提现",
+				type: "receipt-from-user",
+				log: `用户收到${this.model.phone_number}转账，额度：${amount}`,
 				data: {
 					transfer: {
 						id: this.model.id,

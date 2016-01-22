@@ -4,7 +4,6 @@ var co = require("co");
 function install(classMap, RedisClient) {
 	var proto = {
 		getUsers: co.wrap(function*(num, page, options) {
-			console.log("options", options)
 			num = parseInt(num, 10) || 0;
 			page = parseInt(page, 10) || 0;
 			var start = num * page;
@@ -122,7 +121,22 @@ function install(classMap, RedisClient) {
 			var new_user = yield UserCon.create(new_user_info);
 			var AssetCon = classMap.get("Asset");
 			new_user.asset = yield AssetCon.clone(member_type); // clone
-			return yield new_user.save();
+			var res = yield new_user.save();
+
+			/*LOG*/
+			yield classMap.get("AdminLog").create({
+				owner: this.model.id,
+				type: "admin-create-user-with-membertype",
+				log: `管理员创建新会员：${new_user.phone_number}，${member_type.car_flag}`,
+				data: {
+					new_user: {
+						id: new_user.id,
+						model: "user"
+					},
+					associations: ["new_user"]
+				}
+			});
+			return res;
 		}),
 		changeUserStatus: co.wrap(function*(user_id, status) {
 			var UserCon = classMap.get("User")
@@ -195,7 +209,7 @@ function install(classMap, RedisClient) {
 			}));
 			// 均分红利
 			yield shareholder_list.map(function(user) {
-				return 
+				return
 			});
 		})
 	}

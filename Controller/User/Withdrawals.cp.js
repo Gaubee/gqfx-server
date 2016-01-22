@@ -43,7 +43,7 @@ function install(classMap, RedisClient) {
 			yield classMap.get("UserLog").create({
 				owner: this.model.id,
 				type: "apply-withdrawals",
-				log: "用户申请提现",
+				log: `用户申请提现￥${asset.apply_wd_money}`,
 				data: {
 					amount: asset.apply_wd_amount,
 					fee: asset.apply_wd_fee,
@@ -81,7 +81,7 @@ function install(classMap, RedisClient) {
 			yield classMap.get("UserLog").create({
 				owner: this.model.id,
 				type: "confirm-withdrawals-arrive",
-				log: "确认申请提现到帐",
+				log: `确认申请提现的￥${log.money}到帐`,
 				data: log
 			});
 			return res;

@@ -39,6 +39,21 @@ function install(classMap, RedisClient) {
 			var new_user = yield this.constructor.getInstance(new_user_model);
 			yield new_user.initRecommender();
 
+			/*LOG*/
+			yield classMap.get("UserLog").create({
+				owner: this.model.id,
+				type: "user-create-user-with-membertype",
+				log: `用户花费￥${member_type.price}创建了“${member_type.car_flag}”会员：${new_user_model.phone_number}`,
+				data: {
+					member_type: member_type.toJSON(),
+					new_user: {
+						id: new_user_model.id,
+						model: "user"
+					},
+					associations: ["new_user"]
+				}
+			});
+
 			return new_user;
 		}),
 		// 初始化推荐者，一次性，不可修改
@@ -84,10 +99,10 @@ function install(classMap, RedisClient) {
 						current_recommender = yield UserCon.getInstance(current_recommender);
 						yield current_recommender._rechargeFromRebatesChain([{
 							key: "assist",
-							amount: rebates_chain_item.rebate_value * (1 - rebates_chain_item.assist_absorb_rate)
+							amount: rebates_chain_item.rebate_value * rebates_chain_item.assist_absorb_rate
 						}, {
 							key: "balance",
-							amount: rebates_chain_item.rebate_value * rebates_chain_item.assist_absorb_rate
+							amount: rebates_chain_item.rebate_value * (1 - rebates_chain_item.assist_absorb_rate)
 						}]);
 					}
 				}))
@@ -112,7 +127,20 @@ function install(classMap, RedisClient) {
 			key_and_amount_array.forEach(key_and_amount => {
 				asset[key_and_amount.key] += key_and_amount.amount;
 			});
-			yield asset.save();
+			var res = yield asset.save();
+
+			/*LOG*/
+			var asset_attributes = (yield classMap.get("Asset").getModel())._attributes;
+			// console.log("asset_attributes:", asset_attributes)
+			yield classMap.get("UserLog").create({
+				owner: this.model.id,
+				type: "user-recharge-from-rebates-chain",
+				log: `用户收到返利收入：${key_and_amount_array.map(key_and_amount=>asset_attributes[key_and_amount.key].title+":￥"+key_and_amount.amount).join("，")}`,
+				data: {
+					amounts: key_and_amount_array
+				}
+			});
+			return res;
 		}),
 	};
 	return proto;

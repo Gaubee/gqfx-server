@@ -11,6 +11,10 @@ module.exports = [{
 		type: {
 			type: "string",
 			required: true,
+			lowercase: function(cb) {
+				this.type = this.type.toLowerCase();
+				cb(this.type);
+			}
 		},
 		log: {
 			type: "text"

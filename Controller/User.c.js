@@ -29,7 +29,7 @@ function install(waterline_instance) {
 				new_obj.register_id = no_endWith_4_register_id;
 
 				if (!new_obj.hasOwnProperty("permis_password")) {
-					new_obj.password = new_obj.permis_password;
+					new_obj.permis_password = new_obj.password;
 				}
 
 				return create.call(self, new_obj, is_to_instance);

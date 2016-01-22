@@ -96,6 +96,9 @@ waterline.buildAssociations = function(model) {
 		length: function(str, length) {
 			return str.length === length
 		},
+		lowercase: function(old_value, new_value) {
+			return new_value === old_value.toLowerCase();
+		},
 	});
 	Object.keys(model.attributes).forEach(function(attrName) {
 		var attr = model.attributes[attrName];

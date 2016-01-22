@@ -120,6 +120,15 @@ function install(socket, waterline_instance, classMap) {
 					throwE("登录密码错误")
 				}
 				this.session.user_loginer_id = loginer.model.id;
+
+				/*LOG*/
+				yield classMap.get("UserLog").create({
+					owner: this.model.id,
+					type: "apply-withdrawals",
+					log: `用户登录`,
+					data: {
+					}
+				});
 				this.body = loginer;
 			}]
 		},
