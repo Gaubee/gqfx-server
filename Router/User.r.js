@@ -200,7 +200,7 @@ function install(socket, waterline_instance, classMap) {
 			}],
 			"/reset_password": [{
 				doc: {
-					des: "用户重置密码",
+					des: "用户重置登录密码",
 					params: [{
 						name: "[form.security_code]",
 						type: "String",
@@ -248,7 +248,7 @@ function install(socket, waterline_instance, classMap) {
 			}],
 			"/reset_permis_password": [{
 				doc: {
-					des: "用户重置密码",
+					des: "用户重置二级密码",
 					params: [{
 						name: "[form.security_code]",
 						type: "String",
