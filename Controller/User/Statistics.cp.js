@@ -16,6 +16,7 @@ function install(classMap, RedisClient) {
 				"user-upgrade-asset-level": "用户升级",
 			};
 			var criteria = {
+				owner: this.model.id,
 				type: Object.keys(type_map)
 			};
 			var from = options.from;
@@ -43,8 +44,6 @@ function install(classMap, RedisClient) {
 					return
 				}
 				var statistics_item = {
-					owner: UserCon.getInstance(log.owner, true),
-					asset: AssetCon.findOne(log.owner.asset, true),
 					type: log.type,
 					type_name: type_map[log.type],
 					amount: 0,
@@ -83,7 +82,6 @@ function install(classMap, RedisClient) {
 					console.log(log)
 				}
 			});
-			statistics = yield statistics;
 			return {
 				list: statistics,
 				totle_income: totle_income,
