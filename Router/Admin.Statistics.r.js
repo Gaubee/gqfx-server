@@ -47,8 +47,8 @@ function install(socket, waterline_instance, classMap) {
 						type: "Number",
 						des: "总收入"
 					}, {
-						name: "broadcast_proportion",
-						des: "播出比例",
+						name: "total_outgo",
+						des: "总支出",
 						type: "Number"
 					}]
 				},
