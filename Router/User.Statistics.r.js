@@ -21,6 +21,11 @@ function install(socket, waterline_instance, classMap) {
 						can_null: true,
 						des: "结束时间",
 						type: "Date"
+					}, {
+						name: "[query.store_to_session_key]",
+						can_null: true,
+						des: "保存到SESSION的KEY，供其它接口使用",
+						type: "String"
 					}],
 					returns: [{
 						name: "list",
@@ -55,7 +60,11 @@ function install(socket, waterline_instance, classMap) {
 				emit_with: ["session", "query"]
 			}, function*(data) {
 				var user_loginer = yield this.user_loginer;
-				this.body = yield user_loginer.getLogsStatistics(data.query);
+				var res = yield user_loginer.getLogsStatistics(data.query);
+				if (query.store_to_session) {
+					this.session.finance_excel = res;
+				}
+				this.body = res;
 			}],
 		},
 	};
