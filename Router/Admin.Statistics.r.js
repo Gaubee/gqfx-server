@@ -54,11 +54,12 @@ function install(socket, waterline_instance, classMap) {
 				},
 				emit_with: ["session", "query"]
 			}, function*(data) {
+				// console.log("data.query:", yield socket.redisExec("GET",["admin-finance_excel"]))
 				var admin_loginer = yield this.admin_loginer;
 				var res = yield admin_loginer.getLogsStatistics(data.query);
-				if (data.query.store_to_session) {
-					this.session.finance_excel = res;
-				}
+
+				yield socket.redisExec("SET", ["admin-finance_excel", JSON.stringify(res)])
+
 				this.body = res
 			}],
 		},

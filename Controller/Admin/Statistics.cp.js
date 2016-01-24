@@ -39,7 +39,7 @@ function install(classMap, RedisClient) {
 			logs.forEach(log => {
 				// console.log(Object.keys(log), log.id, log.owner)
 				if (!log.owner) {
-					console.log(log)
+					// console.log(log)
 					return
 				}
 				var statistics_item = {
@@ -80,7 +80,7 @@ function install(classMap, RedisClient) {
 					}
 					statistics.push(statistics_item);
 				} catch (e) {
-					console.log(log)
+					// console.log(log)
 				}
 			});
 			statistics = yield statistics;
