@@ -55,7 +55,11 @@ function install(socket, waterline_instance, classMap) {
 				emit_with: ["session", "query"]
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
-				this.body = yield admin_loginer.getLogsStatistics(data.query);
+				var res = yield admin_loginer.getLogsStatistics(data.query);
+				if (data.query.store_to_session) {
+					this.session.finance_excel = res;
+				}
+				this.body = res
 			}],
 		},
 	};
