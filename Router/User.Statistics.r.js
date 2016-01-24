@@ -61,7 +61,7 @@ function install(socket, waterline_instance, classMap) {
 			}, function*(data) {
 				var user_loginer = yield this.user_loginer;
 				var res = yield user_loginer.getLogsStatistics(data.query);
-				if (query.store_to_session) {
+				if (data.query.store_to_session) {
 					this.session.finance_excel = res;
 				}
 				this.body = res;
