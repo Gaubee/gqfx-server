@@ -80,7 +80,13 @@ function install(classMap, RedisClient) {
 				log: "商家打款给申请提现的用户",
 				data: {
 					amount: asset_model.apply_wd_amount,
-					user_id: user_id
+					fee: asset_model.apply_wd_fee,
+					money: asset_model.apply_wd_money,
+					user: {
+						id: user_id,
+						model: "user"
+					},
+					associations: ["user"]
 				}
 			});
 			return user_data;

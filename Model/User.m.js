@@ -1,4 +1,5 @@
 module.exports = [{
+	title: "用户",
 	identity: 'user',
 	schema: true,
 	connection: 'default',
@@ -161,6 +162,18 @@ module.exports = [{
 		asset: {
 			title: "资产信息",
 			model: "asset"
+		}
+	},
+	validationMessages: {
+		password: {
+			// string:"密码要字符串啊",
+			minLength: "密码长度过短，至少要6位",
+			required: "登录密码不可为空"
+		},
+		phone_number: {
+			is_phone: "手机号码格式不正确",
+			required: "手机号码不可为空",
+			unique: "该手机号已被注册",
 		}
 	}
 }, ]

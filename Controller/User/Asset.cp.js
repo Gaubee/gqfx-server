@@ -33,6 +33,46 @@ function install(classMap, RedisClient) {
 				}
 			});
 			return res;
+		}),
+		//升级
+		_upgradeAssetLevel: co.wrap(function*(member_type_id, amount, fee) {
+			amount = parseFloat(amount);
+			amount = Number.isFinite(amount) ? amount : 0;
+			fee = parseFloat(fee);
+			fee = Number.isFinite(fee) ? fee : 0;
+			// 获取会员类型
+			var MemberTypeCon = classMap.get("MemberType");
+			var member_type = yield MemberTypeCon.findOne(member_type_id);
+			if (!member_type) {
+				throwE("找不到指定会员类型")
+			}
+
+			// 获取用户资产
+			var asset_modle = yield this.getAsset();
+			if (asset_modle >= member_type) {
+				throwE("账户当前等级高于目标等级，升级失败")
+			}
+
+			var old_asset_data = asset_modle.toJSON();
+			asset_modle.level = member_type.level;
+			asset_modle.car_flag = member_type.car_flag;
+			asset_modle.dividend = member_type.dividend;
+			asset_modle.balance += 20000;
+			var res = yield asset_modle.save();
+
+			/*LOG*/
+			yield classMap.get("UserLog").create({
+				owner: this.model.id,
+				type: "user-upgrade-asset-level",
+				log: `用户升级到“${member_type.car_flag}”`,
+				data: {
+					old_data: old_asset_data,
+					new_data: asset_modle.toJSON(),
+					amount: amount,
+					fee: fee
+				}
+			});
+			return res;
 		})
 	};
 	return proto;

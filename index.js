@@ -28,12 +28,20 @@ function run() {
 					Function.isFunction(script_module.onerror) && script_module.onerror(e);
 				});
 			} else {
+				var ScriptTools = require("./Script/script_tools");
+				var backuper = ScriptTools.DbBackUp(require("./package.json").version)
+				yield backuper.backup();
+
 				init_router();
 			}
 
 			//初始化路由层
 			function init_router() {
-				require("./Router").install(waterline_instance, classMap, with_ip);
+				try {
+					require("./Router").install(waterline_instance, classMap, with_ip);
+				} catch (e) {
+					console.error(e.stack)
+				}
 			}
 
 		}));
