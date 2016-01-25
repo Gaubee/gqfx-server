@@ -49,15 +49,20 @@ function install(classMap, RedisClient) {
 
 			// 获取用户资产
 			var asset_modle = yield this.getAsset();
-			if (asset_modle >= member_type) {
+			if (asset_modle.level >= member_type.level) {
 				throwE("账户当前等级高于目标等级，升级失败")
 			}
 
 			var old_asset_data = asset_modle.toJSON();
+			asset_modle.balance += 20000 * (member_type.level - asset_modle.level);
+			var total_amount = amount + fee;
+			if (asset_modle.balance < total_amount) {
+				throwE("余额不足，升级失败")
+			}
+
 			asset_modle.level = member_type.level;
 			asset_modle.car_flag = member_type.car_flag;
 			asset_modle.dividend = member_type.dividend;
-			asset_modle.balance += 20000;
 			var res = yield asset_modle.save();
 
 			/*LOG*/
@@ -73,7 +78,18 @@ function install(classMap, RedisClient) {
 				}
 			});
 			return res;
-		})
+		}),
+		useBalanceToUpgradeAssetLevel: co.wrap(function*(member_type_id) {
+			// 获取会员类型
+			var MemberTypeCon = classMap.get("MemberType");
+			var member_type = yield MemberTypeCon.findOne(member_type_id);
+			if (!member_type) {
+				throwE("找不到指定会员类型")
+			}
+
+			return yield this._upgradeAssetLevel(member_type_id, member_type.price, 0)
+
+		}),
 	};
 	return proto;
 };

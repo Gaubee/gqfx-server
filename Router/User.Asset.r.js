@@ -12,9 +12,24 @@ function install(socket, waterline_instance, classMap) {
 					des: "获取用户资产信息"
 				},
 				emit_with: ["session"]
-			},function * (data) {
+			}, function*(data) {
 				var user_loginer = yield this.user_loginer;
 				this.body = yield user_loginer.getAsset();
+			}]
+		},
+		"put": {
+			"/upgrade_asset_level/:member_type_id": [{
+				doc: {
+					des: "用户升级会员类型",
+					params: [{
+						name: "[params.member_type_id]",
+						des: "会员类型ID"
+					}]
+				},
+				emit_with: ["session", "params"]
+			}, function*(data) {
+				var user_loginer = yield this.user_loginer;
+				this.body = yield user_loginer.useBalanceToUpgradeAssetLevel(data.params.member_type_id);
 			}]
 		}
 	};

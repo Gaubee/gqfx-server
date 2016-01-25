@@ -211,7 +211,7 @@ function install(classMap, RedisClient) {
 			yield shareholder_list.map(function(user) {
 				return
 			});
-		})
+		}),
 	}
 	return proto;
 }
