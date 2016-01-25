@@ -90,7 +90,6 @@ function install(waterline_instance) {
 
 	var get_model_content = co.wrap(function*(model, key_define, key) {
 		if (model[key]) {
-			console.log(("_" + (key_define.model || key_define.collection)).camelize());
 			model[key] = yield classMap.get(("_" + (key_define.model || key_define.collection)).camelize()).findOne(model[key], true /*获取实例，不同类中可能有不同的字段要隐藏*/ );
 		}
 	});
