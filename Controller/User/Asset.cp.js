@@ -54,7 +54,7 @@ function install(classMap, RedisClient) {
 			}
 
 			var old_asset_data = asset_modle.toJSON();
-			asset_modle.balance += 20000 * (member_type.level - asset_modle.level);
+			// asset_modle.balance += 20000 * (member_type.level - asset_modle.level);
 			var total_amount = amount + fee;
 			if (asset_modle.balance < total_amount) {
 				throwE("余额不足，升级失败")
@@ -62,7 +62,7 @@ function install(classMap, RedisClient) {
 
 			asset_modle.level = member_type.level;
 			asset_modle.car_flag = member_type.car_flag;
-			asset_modle.dividend = member_type.dividend;
+			asset_modle.dividend -= total_amount;
 			var res = yield asset_modle.save();
 
 			/*LOG*/
