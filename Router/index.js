@@ -50,7 +50,7 @@ function install(waterline_instance, classMap, core_ip) {
 					socket.handles.routerRegister(register_info, router_handle);
 				});
 			});
-		};;
+		};
 
 		socket.on("close", function() {
 			console.flag("SOCKET CLOSE", "客户端与服务端连接关闭");

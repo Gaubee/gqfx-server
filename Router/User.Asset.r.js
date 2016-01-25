@@ -24,11 +24,15 @@ function install(socket, waterline_instance, classMap) {
 					params: [{
 						name: "[params.member_type_id]",
 						des: "会员类型ID"
+					}, {
+						name: "[form.permis_password]",
+						des: "二级密码"
 					}]
 				},
-				emit_with: ["session", "params"]
+				emit_with: ["session", "params", "form"]
 			}, function*(data) {
 				var user_loginer = yield this.user_loginer;
+				user_loginer._checkPermisPassword(data.form.permis_password);
 				this.body = yield user_loginer.useBalanceToUpgradeAssetLevel(data.params.member_type_id);
 			}]
 		}
