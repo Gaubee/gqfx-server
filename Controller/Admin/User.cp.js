@@ -69,7 +69,15 @@ function install(classMap, RedisClient) {
 			//执行查询
 			var criteria = search_options.criteria;
 			try {
-				criteria = JSON.parse(criteria);
+				criteria = JSON.parse(criteria, function(k, v) {
+					if (typeof v === "object" && Object.keys(v).length !== 0) {
+						return v;
+					}
+					if (v || v === 0 || v === false) {
+						return v;
+					}
+				});
+				console.log(criteria)
 			} catch (e) {
 				throwE("criteria parse Error, " + e.message);
 			}

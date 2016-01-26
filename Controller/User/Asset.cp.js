@@ -62,7 +62,7 @@ function install(classMap, RedisClient) {
 
 			asset_modle.level = member_type.level;
 			asset_modle.car_flag = member_type.car_flag;
-			asset_modle.dividend -= total_amount;
+			asset_modle.balance -= total_amount;
 			asset_modle.rebates_chain = member_type.rebates_chain;
 			var res = yield asset_modle.save();
 
