@@ -48,7 +48,7 @@ function run() {
 	});
 };
 if (process.argv.indexOf("--with-server") !== -1) {
-	require("gq-core").run().then(run).catch(console.error);
+	require("gq-core").run().then(run).catch(e => console.error(e.stack));
 } else {
 	run();
 }

@@ -29,10 +29,10 @@ function install(classMap, RedisClient) {
 
 			var admin_config = yield classMap.get("Admin").getConfig();
 			asset.apply_wd_status = "用户已申请";
-			asset.balance -= amount;
 			asset.apply_wd_money = amount
 			asset.apply_wd_fee = amount * admin_config.提现费率;
 			asset.apply_wd_amount = asset.apply_wd_money + asset.apply_wd_fee;
+			asset.balance -= asset.apply_wd_amount;
 
 			if (asset.balance < asset.apply_wd_amount) {
 				throwE("余额不足，申请提现失败");
