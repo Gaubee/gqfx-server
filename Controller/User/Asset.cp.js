@@ -63,8 +63,14 @@ function install(classMap, RedisClient) {
 			asset_modle.level = member_type.level;
 			asset_modle.car_flag = member_type.car_flag;
 			asset_modle.dividend -= total_amount;
+			asset_modle.rebates_chain = member_type.rebates_chain;
 			var res = yield asset_modle.save();
 
+			var new_asset_data = asset_modle.toJSON();
+			["id", "createdAt", "updatedAt"].forEach(key => {
+				delete old_asset_data[key]
+				delete new_asset_data[key]
+			});
 			/*LOG*/
 			yield classMap.get("UserLog").create({
 				owner: this.model.id,
@@ -72,7 +78,7 @@ function install(classMap, RedisClient) {
 				log: `用户升级到“${member_type.car_flag}”`,
 				data: {
 					old_data: old_asset_data,
-					new_data: asset_modle.toJSON(),
+					new_data: new_asset_data,
 					amount: amount,
 					fee: fee
 				}
