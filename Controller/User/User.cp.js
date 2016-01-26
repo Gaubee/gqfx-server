@@ -95,7 +95,7 @@ function install(classMap, RedisClient) {
 						return
 					}
 					// 根据股份划分等级，股份低的话，无法享有返利
-					if (current_recommender.asset.level >= rebates_chain_item.level) {
+					if (current_recommender.asset.level >= rebates_chain_item.level && rebates_chain_item.assist_absorb_rate) {
 						current_recommender = yield UserCon.getInstance(current_recommender);
 						yield current_recommender._rechargeFromRebatesChain([{
 							key: "assist",
