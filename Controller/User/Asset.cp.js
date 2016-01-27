@@ -35,6 +35,10 @@ function install(classMap, RedisClient) {
 			return res;
 		}),
 		//升级
+		/*
+		 * amount充值的金额
+		 * fee手续费
+		 */
 		_upgradeAssetLevel: co.wrap(function*(member_type_id, amount, fee) {
 			amount = parseFloat(amount);
 			amount = Number.isFinite(amount) ? amount : 0;
@@ -55,7 +59,7 @@ function install(classMap, RedisClient) {
 
 			var old_asset_data = asset_modle.toJSON();
 			// asset_modle.balance += 20000 * (member_type.level - asset_modle.level);
-			var total_amount = amount + fee;
+			var total_amount = member_type.price + fee;
 			if (asset_modle.balance < total_amount) {
 				throwE("余额不足，升级失败")
 			}
@@ -93,7 +97,7 @@ function install(classMap, RedisClient) {
 				throwE("找不到指定会员类型")
 			}
 
-			return yield this._upgradeAssetLevel(member_type_id, member_type.price, 0)
+			return yield this._upgradeAssetLevel(member_type_id, 0, 0)
 
 		}),
 	};
