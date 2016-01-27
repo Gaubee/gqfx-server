@@ -59,7 +59,7 @@ function install(classMap, RedisClient) {
 
 			var old_asset_data = asset_modle.toJSON();
 			// asset_modle.balance += 20000 * (member_type.level - asset_modle.level);
-			var total_amount = member_type.price + fee;
+			var total_amount = member_type.price - amount + fee;
 			if (asset_modle.balance < total_amount) {
 				throwE("余额不足，升级失败")
 			}
