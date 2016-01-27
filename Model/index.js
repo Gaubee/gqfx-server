@@ -1,3 +1,4 @@
+require("./i18n")
 var Waterline = require('waterline');
 var sailsMemoryAdapter = require('sails-memory');
 var sailsDiskAdapter = require('sails-disk');

@@ -1,4 +1,5 @@
 module.exports = [{
+	title: "地址信息",
 	identity: 'address',
 	connection: 'default',
 	attributes: {

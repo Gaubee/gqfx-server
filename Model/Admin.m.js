@@ -1,4 +1,5 @@
 module.exports = [{
+	title: "管理员",
 	identity: 'admin',
 	schema: true,
 	connection: 'default',
