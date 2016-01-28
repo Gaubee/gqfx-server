@@ -89,7 +89,7 @@ function install(classMap, RedisClient) {
 							totle_income += statistics_item.fee;
 							break;
 						case "confirm-withdrawals-arrive":
-							statistics_item.amount = log.data.amount;
+							statistics_item.amount = log.data.money;
 							statistics_item.fee = log.data.fee;
 							totle_outgo += statistics_item.amount;
 							break;
