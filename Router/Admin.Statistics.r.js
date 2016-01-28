@@ -62,11 +62,6 @@ function install(socket, waterline_instance, classMap) {
 
 				this.body = res
 			}],
-			"/clearing_Asset_Cache": [{
-				doc: {
-					des: "结算用户的资金"
-				}
-			}],
 			"/get_history_clearing_logs_statistics_name": [{
 				doc: {
 					des: "获取历史的结算报表数据名"
