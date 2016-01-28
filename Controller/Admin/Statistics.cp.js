@@ -246,7 +246,7 @@ function install(classMap, RedisClient) {
 			});
 			logs_statistics_map = Object.keys(logs_statistics_map).map(key => {
 				logs_statistics_map[key].type = key;
-				return logs_statistics_map
+				return logs_statistics_map[key]
 			});
 			//写入数据库中备份
 			var redis_client = yield RedisClient.getClient();
