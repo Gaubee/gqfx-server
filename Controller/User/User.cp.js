@@ -6,6 +6,8 @@ function install(classMap, RedisClient) {
 	var proto = {
 		//创建子用户
 		createUserWithMemberType: co.wrap(function*(member_type_id, new_user_info, options) {
+			// this._checkVerify();
+
 			// 获取会员类型
 			var MemberTypeCon = classMap.get("MemberType");
 			var member_type = yield MemberTypeCon.findOne(member_type_id);
@@ -98,10 +100,10 @@ function install(classMap, RedisClient) {
 					if (current_recommender.asset.level >= rebates_chain_item.level && rebates_chain_item.assist_absorb_rate) {
 						current_recommender = yield UserCon.getInstance(current_recommender);
 						yield current_recommender._rechargeFromRebatesChain([{
-							key: "assist",
+							key: "cache_assist",
 							amount: rebates_chain_item.rebate_value * rebates_chain_item.assist_absorb_rate
 						}, {
-							key: "balance",
+							key: "cache_balance",
 							amount: rebates_chain_item.rebate_value * (1 - rebates_chain_item.assist_absorb_rate)
 						}]);
 					}

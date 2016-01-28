@@ -48,14 +48,6 @@ module.exports = [{
 			},
 			defaultsTo: 0,
 		},
-		assist: {
-			type: "float",
-			title: "互助积金",
-			number: function(cb) {
-				cb(isNaN(this.assist = parseFloat(parseFloat(this.assist).toFixed(4))));
-			},
-			defaultsTo: 0,
-		},
 		balance: {
 			type: "float",
 			title: "余额",
@@ -72,6 +64,44 @@ module.exports = [{
 		level: {
 			title: "级别",
 			type: "integer",
+			defaultsTo: 0
+		},
+		/*
+		 * 第三方平台使用的数据
+		 */
+		assist: {
+			type: "float",
+			title: "互助积金", //用来商城购物
+			number: function(cb) {
+				cb(isNaN(this.assist = parseFloat(parseFloat(this.assist).toFixed(4))));
+			},
+			defaultsTo: 0,
+		},
+		advertising: {
+			type: "float",
+			title: "广告金", //用给商城打广告用的，可用余额充值
+			number: function(cb) {
+				cb(isNaN(this.assist = parseFloat(parseFloat(this.assist).toFixed(4))));
+			},
+			defaultsTo: 0,
+		},
+		/*
+		 * 数据缓冲
+		 */
+		cache_balance: {
+			type: "float",
+			title: "待结算的余额",
+			number: function(cb) {
+				cb(isNaN(this.balance = parseFloat(parseFloat(this.balance).toFixed(4))));
+			},
+			defaultsTo: 0
+		},
+		cache_assist: {
+			type: "float",
+			title: "待结算的积金",
+			number: function(cb) {
+				cb(isNaN(this.balance = parseFloat(parseFloat(this.balance).toFixed(4))));
+			},
 			defaultsTo: 0
 		},
 		/*
@@ -113,5 +143,10 @@ module.exports = [{
 			max: 1,
 			min: 0
 		},
+		owner: {
+			title: "资产拥有者",
+			model: "user",
+			required: true
+		}
 	}
 }, ];

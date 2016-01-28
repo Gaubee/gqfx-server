@@ -48,6 +48,12 @@ function install() {
 	}, {
 		name: "分红积分化比例",
 		type: "Number"
+	}, {
+		name: "before_clearing_point",
+		type: "Number"
+	}, {
+		name: "clearing_point",
+		type: "Number"
 	}, ];
 
 	fs.lsAll(__dirname + "/Admin").forEach(file_path => {

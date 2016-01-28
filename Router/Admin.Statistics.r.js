@@ -62,7 +62,41 @@ function install(socket, waterline_instance, classMap) {
 
 				this.body = res
 			}],
+			"/clearing_Asset_Cache": [{
+				doc: {
+					des: "结算用户的资金"
+				}
+			}],
+			"/get_history_clearing_logs_statistics_name": [{
+				doc: {
+					des: "获取历史的结算报表数据名"
+				},
+				emit_with: ["session"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				this.body = yield admin_loginer.getHistoryClearingLogsStatisticsName();
+			}],
+			"/get_history_clearing_logs_statistics_data/:name": [{
+				doc: {
+					des: "获取指定报表数据"
+				},
+				emit_with: ["session", "params"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				this.body = yield admin_loginer.getHistoryClearingLogsStatisticsData(data.params.name);
+			}]
 		},
+		"post": {
+			"/clearing_logs_statistics": [{
+				doc: {
+					des: "手动结算"
+				},
+				emit_with: ["session"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				this.body = yield admin_loginer.clearingLogsStatistics();
+			}]
+		}
 	};
 	return routers;
 };
