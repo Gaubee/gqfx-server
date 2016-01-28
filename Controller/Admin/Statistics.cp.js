@@ -102,7 +102,7 @@ function install(classMap, RedisClient) {
 							});
 							break;
 						case "user-upgrade-asset-level":
-							statistics_item.amount = log.data.amount;
+							statistics_item.amount = log.data.price;
 							statistics_item.fee = log.data.fee;
 
 							statistics_item.old_data = log.data.old_data;

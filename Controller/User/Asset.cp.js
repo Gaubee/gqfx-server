@@ -83,6 +83,7 @@ function install(classMap, RedisClient) {
 				data: {
 					old_data: old_asset_data,
 					new_data: new_asset_data,
+					price: member_type.price,
 					amount: amount,
 					fee: fee
 				}
