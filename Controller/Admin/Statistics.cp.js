@@ -92,7 +92,7 @@ function install(classMap, RedisClient) {
 						case "user-create-user-with-membertype":
 							statistics_item.amount = log.data.member_type.price;
 							statistics_item.new_user = /*yield*/ UserCon.findOne(log.data.new_user.id, true);
-							statistics_item.new_user_asst = co(function*() {
+							statistics_item.new_user_asset = co(function*() {
 								var new_user = yield statistics_item.new_user;
 								return yield new_user.getAsset()
 							});
