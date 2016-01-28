@@ -82,6 +82,10 @@ function install(classMap, RedisClient) {
 							statistics_item.amount = log.data.amount;
 							statistics_item.fee = log.data.fee;
 							statistics_item.payee = /*yield*/ UserCon.findOne(log.data.payee.id, true);
+							statistics_item.payee_asset = co(function*() {
+								var payee = yield statistics_item.payee;
+								return yield payee.getAsset()
+							});
 							totle_income += statistics_item.fee;
 							break;
 						case "confirm-withdrawals-arrive":
