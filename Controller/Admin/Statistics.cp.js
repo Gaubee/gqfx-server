@@ -69,13 +69,18 @@ function install(classMap, RedisClient) {
 					amount: 0,
 					fee: 0,
 					createdAt: log.createdAt,
-					log_id: log.id
+					log_id: log.id,
+					income: 0,
+					outgo: 0,
 				};
 				try {
 					switch (log.type) {
 						case "user-recharge":
 							statistics_item.amount = log.data.amount;
 							statistics_item.fee = log.data.fee || 0;
+
+							statistics_item.income = statistics_item.amount;
+
 							totle_income += statistics_item.amount;
 							break;
 						case "transfers-to-user":
@@ -86,11 +91,17 @@ function install(classMap, RedisClient) {
 								var payee = yield statistics_item.payee;
 								return yield payee.getAsset()
 							});
+
+							statistics_item.income = statistics_item.fee;
+
 							totle_income += statistics_item.fee;
 							break;
 						case "confirm-withdrawals-arrive":
 							statistics_item.amount = log.data.money;
 							statistics_item.fee = log.data.fee;
+
+							statistics_item.outgo = statistics_item.amount;
+
 							totle_outgo += statistics_item.amount;
 							break;
 						case "user-create-user-with-membertype":
@@ -100,6 +111,7 @@ function install(classMap, RedisClient) {
 								var new_user = yield statistics_item.new_user;
 								return yield new_user.getAsset()
 							});
+
 							break;
 						case "user-upgrade-asset-level":
 							statistics_item.amount = log.data.price;
@@ -108,7 +120,10 @@ function install(classMap, RedisClient) {
 							statistics_item.old_data = log.data.old_data;
 							statistics_item.new_data = log.data.new_data;
 
-							totle_income += statistics_item.amount + statistics_item.fee;
+
+							statistics_item.income = statistics_item.amount + statistics_item.fee;
+
+							totle_income += statistics_item.income;
 							break;
 					}
 					statistics.push(statistics_item);
@@ -220,8 +235,18 @@ function install(classMap, RedisClient) {
 				// 整理出不同表的数据
 			logs_statistics_map = {};
 			logs_statistics.forEach(statistics_item => {
-				var logs = logs_statistics_map[statistics_item.type] || (logs_statistics_map[statistics_item.type] = []);
-				logs.push(statistics_item);
+				var logs = logs_statistics_map[statistics_item.type] || (logs_statistics_map[statistics_item.type] = {
+					list: [],
+					income: 0,
+					outgo: 0,
+				});
+				logs.list.push(statistics_item);
+				logs.income += statistics_item.income;
+				logs.outgo += statistics_item.outgo;
+			});
+			logs_statistics_map = Object.keys(logs_statistics_map).map(key => {
+				logs_statistics_map[key].type = key;
+				return logs_statistics_map
 			});
 			//写入数据库中备份
 			var redis_client = yield RedisClient.getClient();
