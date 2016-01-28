@@ -218,8 +218,8 @@ function install(classMap, RedisClient) {
 			//写入数据库中备份
 			var redis_client = yield RedisClient.getClient();
 
-			var logs_statistics_json = JSON.stringify(logs_statistics);
-			yield redis_client.thunk.set([file_prefix + (new Date).toISOString(), logs_statistics_json]);
+			var logs_statistics_map_json = JSON.stringify(logs_statistics_map);
+			yield redis_client.thunk.set([file_prefix + (new Date).toISOString(), logs_statistics_map_json]);
 
 			return logs_statistics_map;
 		}),
@@ -234,9 +234,9 @@ function install(classMap, RedisClient) {
 			if (name.indexOf(file_prefix) !== 0) {
 				throwE("表单名有误")
 			}
-			var logs_statistics_json = yield redis_client.thunk.get([name]);
+			var logs_statistics_map_json = yield redis_client.thunk.get([name]);
 			try {
-				return JSON.parse(logs_statistics_json);
+				return JSON.parse(logs_statistics_map_json);
 			} catch (e) {
 				throwE("表单数据有误或者损坏");
 			}
