@@ -1,3 +1,4 @@
+var path = require("path");
 /*错误信息整理*/
 var ModelMap = new Map();
 fs.lsAll(__dirname).forEach(function(file_path) {
@@ -15,7 +16,7 @@ global.GQFX_SERVER_MODEL_MAP = ModelMap;
 var Module = require('module');
 var _compile = Module.prototype._compile;
 Module.prototype._compile = function(content, filename) {
-	if (filename.indexOf("\\anchor\\lib\\match\\matchRule.js") !== -1) {
+	if (filename.indexOf(["", "anchor", "lib", "match", "matchRule.js"].join(path.sep)) !== -1) {
 		content = content.replace(`util.format('"%s" validation rule failed for input: %s', ruleName, util.inspect(data))`,
 			`(function(){
 				var ruleNameMap = {
@@ -27,7 +28,7 @@ Module.prototype._compile = function(content, filename) {
 				return util.format('"%s" 校验失败: %s', ruleName, util.inspect(data))
 			}())`
 		)
-	} else if (filename.indexOf("\\waterline\\error\\WLValidationError.js") !== -1) {
+	} else if (filename.indexOf(["", "waterline", "error", "WLValidationError.js"].join(path.sep)) !== -1) {
 		console.log(filename);
 
 		content = content.replace(
