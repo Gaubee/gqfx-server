@@ -12,5 +12,7 @@ MemberModel.attributes.price = {
 	title: "标价",
 	type: "float",
 	defaultsTo: 0,
-}
+};
+
+delete MemberModel.attributes.owner;
 module.exports = [MemberModel];
