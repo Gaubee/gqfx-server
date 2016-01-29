@@ -128,6 +128,7 @@ function install(classMap, RedisClient) {
 			var UserCon = classMap.get("User");
 			var new_user = yield UserCon.create(new_user_info);
 			var AssetCon = classMap.get("Asset");
+			member_type.owner = new_user.id;
 			new_user.asset = yield AssetCon.clone(member_type); // clone
 			var res = yield new_user.save();
 

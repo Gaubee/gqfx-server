@@ -26,6 +26,7 @@ function install(classMap, RedisClient) {
 
 			// 创建子用户的资产
 			var AssetCon = classMap.get("Asset");
+			member_type.owner = new_user_model.id;
 			new_user_model.asset = (yield AssetCon.clone(member_type)).id;
 			yield new_user_model.save();
 

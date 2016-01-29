@@ -9,7 +9,9 @@ function install(classMap, RedisClient) {
 			var AssetCon = classMap.get("Asset");
 			var asset;
 			if (!this.model.asset || !(asset = yield AssetCon.findOne(this.model.asset.id || this.model.asset))) {
-				var asset = yield AssetCon.create();
+				var asset = yield AssetCon.create({
+					owner: this.model.id
+				});
 				this.model.asset = asset.id;
 				yield this.model.save()
 			}
