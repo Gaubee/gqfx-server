@@ -16,6 +16,8 @@ global.GQFX_SERVER_MODEL_MAP = ModelMap;
 var Module = require('module');
 var _compile = Module.prototype._compile;
 Module.prototype._compile = function(content, filename) {
+	return _compile.call(this, content, filename)
+	
 	if (filename.indexOf(["", "anchor", "lib", "match", "matchRule.js"].join(path.sep)) !== -1) {
 		content = content.replace(`util.format('"%s" validation rule failed for input: %s', ruleName, util.inspect(data))`,
 			`(function(){
@@ -30,7 +32,6 @@ Module.prototype._compile = function(content, filename) {
 		)
 	} else if (filename.indexOf(["", "waterline", "error", "WLValidationError.js"].join(path.sep)) !== -1) {
 		console.log(filename);
-return
 		content = content.replace(
 				`this.details = util.format('Invalid attributes sent to %s:\\n',this.model)`,
 				`var self = this;
