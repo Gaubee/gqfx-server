@@ -35,6 +35,10 @@ Module.prototype._compile = function(content, filename) {
 				`this.details = util.format('Invalid attributes sent to %s:\\n',this.model)`,
 				`var self = this;
 			var _model = GQFX_SERVER_MODEL_MAP.get(this.model);
+			if (!_model) {
+				console.flag("Model no defined", this.model);
+				_model = {};
+			}
 			var _model_validationMessages = _model.validationMessages||{};
 			this.details = util.format('%s对象属性校验出错:\\n',_model.title||this.model)`
 			).replace(
