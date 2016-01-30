@@ -79,6 +79,43 @@ function install(socket, waterline_instance, classMap) {
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
 				this.body = yield admin_loginer.getHistoryClearingLogsStatisticsData(data.params.name);
+			}],
+			"/_get_rebates_chain_logs/:from/:to": [{
+				doc: {
+					des: "⚠ 获取推荐链的返利日志信息",
+					params: [{
+						name: "[params.from]",
+						type: "UserLog<type=user-create-user-with-membertype>.id"
+					}, {
+						name: "[params.to]",
+						type: "UserLog<type=user-create-user-with-membertype>.id"
+					}]
+				},
+				emit_with: ["params"]
+			}, function*(data) {
+				var from = parseInt(data.params.from) || 0;
+				var to = Math.max(parseInt(data.params.to) || from, from);
+				var UserLogCon = classMap.get("UserLog");
+				var UserLogModel = yield UserLogCon.getModel();
+				var new_user_log_before = yield UserLogModel.findOne({
+					id: {
+						"<": from
+					},
+					type: "user-create-user-with-membertype",
+					sort:"id DESC"
+				});
+				var id_limit = {
+					">": new_user_log_before ? new_user_log_before.id : 0,
+					"<": to
+				};
+				console.log(id_limit);
+				var rebates_chain_logs = yield UserLogModel.find({
+					id: id_limit,
+					type: "user-recharge-from-rebates-chain",
+				});
+
+				this.body = rebates_chain_logs;
+
 			}]
 		},
 		"post": {
