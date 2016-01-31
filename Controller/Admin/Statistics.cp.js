@@ -260,18 +260,15 @@ function install(classMap, RedisClient) {
 		getHistoryClearingLogsStatisticsName: co.wrap(function*(options) {
 			var redis_client = yield RedisClient.getClient();
 			var keys = yield redis_client.thunk.keys([file_prefix + "*"]);
-			return keys.map(function(key) {
-				return key.replace(file_prefix, "")
-			}).sort(function(a, b) {
-				return Date(a) - Date(b)
-			});
+			return keys.sort(function(a, b) {
+				return (+new Date(a.replace(file_prefix, ""))) - (+new Date(b.replace(file_prefix, "")));
+			})
 		}),
 		// 获取指定报表数据
 		getHistoryClearingLogsStatisticsData: co.wrap(function*(name) {
 			var redis_client = yield RedisClient.getClient();
 			if (name.indexOf(file_prefix) !== 0) {
-				// throwE("表单名有误")
-				name = file_prefix + name;
+				throwE("表单名有误")
 			}
 			var logs_statistics_map_json = yield redis_client.thunk.get([name]);
 			try {
