@@ -259,13 +259,19 @@ function install(classMap, RedisClient) {
 		// 获取历史的结算报表数据名
 		getHistoryClearingLogsStatisticsName: co.wrap(function*(options) {
 			var redis_client = yield RedisClient.getClient();
-			return yield redis_client.thunk.keys([file_prefix + "*"]);
+			var keys = yield redis_client.thunk.keys([file_prefix + "*"]);
+			return keys.map(function(key) {
+				return key.replace(file_prefix, "")
+			}).sort(function(a, b) {
+				return Date(a) - Date(b)
+			});
 		}),
 		// 获取指定报表数据
 		getHistoryClearingLogsStatisticsData: co.wrap(function*(name) {
 			var redis_client = yield RedisClient.getClient();
 			if (name.indexOf(file_prefix) !== 0) {
-				throwE("表单名有误")
+				// throwE("表单名有误")
+				name = file_prefix + name;
 			}
 			var logs_statistics_map_json = yield redis_client.thunk.get([name]);
 			try {
