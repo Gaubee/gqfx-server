@@ -80,6 +80,27 @@ function install(socket, waterline_instance, classMap) {
 				this.body = loginer;
 			}],
 		},
+		"put": {
+			"/update_password": [{
+				doc: {
+					des: "高级管理员修改自己密码",
+					params: [{
+						name: "[form.old_pwd]",
+						type: "String",
+						des: "旧登录密码"
+					}, {
+						name: "[form.new_pwd]",
+						type: "String",
+						des: "新登录密码"
+					}]
+				},
+				emit_with: ["session", "form"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				admin_loginer._checkLevel();
+				this.body = yield admin_loginer.changePassword(data.form.old_password, data.form.new_password);
+			}],
+		},
 		"delete": {
 			"/login_out": [{
 				doc: {

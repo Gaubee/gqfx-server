@@ -54,6 +54,17 @@ function install() {
 		}
 
 	};
+
+
+	Admin.prototype.changePassword = co.wrap(function*(old_pwd, new_pwd) {
+		if (this.model.password !== $$.md5_2(old_pwd)) {
+			throwE("登录密码错误")
+		}
+		this.model.password = new_pwd;
+		yield this.model.save();
+		return this;
+	});
+	
 	var config_keys = Admin.config_keys = [{
 		name: "提现费率",
 		type: "Number"
