@@ -16,7 +16,9 @@ function install(classMap, RedisClient) {
 	var proto = {
 		getLogsStatistics: co.wrap(function*(options) {
 			var UserLogCon = classMap.get("UserLog");
+			var AdminLogCon = classMap.get("AdminLog");
 			var UserLogModel = yield UserLogCon.getModel();
+			var AdminLogModel = yield AdminLogCon.getModel();
 			var query = UserLogModel.find();
 
 			var filter_types = Array.isArray(options.filter_types) ?
@@ -49,21 +51,32 @@ function install(classMap, RedisClient) {
 			query.where(criteria);
 
 			var logs = yield query;
+
+			// // 新建用户加入管理员创建
+			// if (criteria.type.indexOf("user-create-user-with-membertype") !== -1) {
+			// 	var admin_create_users = yield AdminLogModel.find({
+			// 		type: "admin-create-user-with-membertype"
+			// 	})
+			// 	admin_create_users.forEach(function (log_item) {
+			// 		log_item.owner = 0
+			// 		log_item.type = "admin-create-user-with-membertype"
+			// 	});
+			// }
 			var AssetCon = classMap.get("Asset");
 			var UserCon = classMap.get("User");
 
 			var totle_income = 0; //收入
 			var totle_outgo = 0; //支出
 			var statistics = [];
+			console.log("logs:", logs);
 			logs.forEach(log => {
-				// console.log(Object.keys(log), log.id, log.owner)
+				//管理员创建用户，owner是0
 				if (!log.owner) {
-					// console.log(log)
-					return
+					// return
 				}
 				var statistics_item = {
-					owner: UserCon.getInstance(log.owner, true),
-					asset: AssetCon.findOne(log.owner.asset, true),
+					owner: log.owner && UserCon.getInstance(log.owner, true),
+					asset: log.owner && log.owner.asset && AssetCon.findOne(log.owner.asset, true),
 					type: log.type,
 					type_name: type_map[log.type],
 					amount: 0,
@@ -128,7 +141,7 @@ function install(classMap, RedisClient) {
 					}
 					statistics.push(statistics_item);
 				} catch (e) {
-					// console.log(log)
+					console.log(e)
 				}
 			});
 			statistics = yield statistics;
@@ -203,7 +216,7 @@ function install(classMap, RedisClient) {
 
 				//保存与打印日志
 				yield [asset.save(), UserLogCon.create({
-					owner: asset.owner,
+					owner: asset_model.owner,
 					type: "clearing-cache",
 					log: `用户结算：${asset_attributes.balance.title}:￥${old_data.cache_balance}，${asset_attributes.assist.title}:￥${old_data.cache_assist}`,
 					data: {
@@ -261,7 +274,7 @@ function install(classMap, RedisClient) {
 			var redis_client = yield RedisClient.getClient();
 			var keys = yield redis_client.thunk.keys([file_prefix + "*"]);
 			return keys.sort(function(a, b) {
-				return (+new Date(a.replace(file_prefix, ""))) - (+new Date(b.replace(file_prefix, "")));
+				return (+new Date(b.replace(file_prefix, ""))) - (+new Date(a.replace(file_prefix, "")));
 			})
 		}),
 		// 获取指定报表数据

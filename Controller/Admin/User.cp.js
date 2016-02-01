@@ -133,18 +133,31 @@ function install(classMap, RedisClient) {
 			var res = yield new_user.save();
 
 			/*LOG*/
-			yield classMap.get("AdminLog").create({
+			yield [classMap.get("AdminLog").create({
 				owner: this.model.id,
 				type: "admin-create-user-with-membertype",
 				log: `管理员创建新会员：${new_user.phone_number}，${member_type.car_flag}`,
 				data: {
+					member_type: member_type.toJSON(),
 					new_user: {
 						id: new_user.id,
 						model: "user"
 					},
 					associations: ["new_user"]
 				}
-			});
+			}), classMap.get("UserLog").create({
+				owner: 0,
+				type: "user-create-user-with-membertype",
+				log: `管理员创建新会员：${new_user.phone_number}，${member_type.car_flag}`,
+				data: {
+					member_type: member_type.toJSON(),
+					new_user: {
+						id: new_user.id,
+						model: "user"
+					},
+					associations: ["new_user"]
+				}
+			})];
 			return res;
 		}),
 		changeUserStatus: co.wrap(function*(user_id, status) {
