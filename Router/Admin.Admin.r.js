@@ -31,13 +31,13 @@ function install(socket, waterline_instance, classMap) {
 					params: [{
 						name: "[form.admin_name]",
 						des: "新密码"
-					},{
+					}, {
 						name: "[form.password]",
 						des: "新密码"
-					},{
+					}, {
 						name: "[form.level]",
 						des: "【普通 财务 会计】"
-					},]
+					}, ]
 				},
 				emit_with: ["session", "form"]
 			}, function*(data) {
@@ -61,6 +61,27 @@ function install(socket, waterline_instance, classMap) {
 				this.body = yield admin_loginer.changeAdminPassword(data.params.admin_id, data.form.new_password);
 			}]
 		},
+		"delete": {
+			"/remove/:admin_id": [{
+				doc: {
+					des: "删除低级管理员",
+					params: [{
+						name: "[params.admin_id]"
+					}]
+				},
+				emit_with: ["session", "params"]
+			}, function*(data) {
+				var admin_loginer = yield this.admin_loginer;
+				admin_loginer._checkLevel();
+
+				var AdminCon = classMap.get("Admin");
+				var remover = yield AdminCon.findOne(data.params.admin_id);
+				if (!remover) {
+					throwE("找不到指定管理员");
+				}
+				this.body = yield remover.destroy();
+			}]
+		}
 	}
 	return routers;
 }
