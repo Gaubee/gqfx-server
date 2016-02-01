@@ -98,7 +98,7 @@ function install(socket, waterline_instance, classMap) {
 			}, function*(data) {
 				var admin_loginer = yield this.admin_loginer;
 				admin_loginer._checkLevel();
-				this.body = yield admin_loginer.changePassword(data.form.old_password, data.form.new_password);
+				this.body = yield admin_loginer.changePassword(data.form.old_pwd, data.form.new_pwd);
 			}],
 		},
 		"delete": {
