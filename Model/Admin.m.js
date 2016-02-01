@@ -11,7 +11,13 @@ module.exports = [{
 		},
 		level: {
 			type: "string",
-			enum: ["顶级"],
+			enum: [
+				"顶级",
+				"超级",
+				"普通",
+				"财务",
+				"会计",
+			],
 			defaultsTo: "顶级"
 		},
 		/* 基础信息 */

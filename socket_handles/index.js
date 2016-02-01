@@ -1,5 +1,12 @@
 var co = require("co");
-var tcp = require("gq-core/lib/tcp");
+try {
+	var tcp = require("gq-core/lib/tcp");
+	//配置不显示group的字段
+	tcp.config.hidden_groups["success:router-register"] = true;
+} catch (e) {
+	tcp = require("GQ-core/tcp")
+	tcp.config.hiddenFlags.add("success:router-register");
+}
 
 exports.install = install;
 
@@ -9,8 +16,6 @@ function install(ip) {
 		family: 'IPv4',
 		port: 4001
 	};
-	//配置不显示group的字段
-	tcp.config.hidden_groups["success:router-register"] = true;
 	//初始化TCP连接
 	var socket = exports.tcp_socket = tcp.createClient(address, function() {
 		console.log(socket.address())

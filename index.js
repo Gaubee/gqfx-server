@@ -1,5 +1,9 @@
 //加载全局拓展
-require("gq-core/lib/global");
+try {
+	require("gq-core/lib/global");
+} catch (e) {
+	require("GQ-core");
+}
 var co = require("co");
 
 exports.run = run;

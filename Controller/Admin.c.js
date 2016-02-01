@@ -38,6 +38,21 @@ function install() {
 				return config;
 			})
 		}
+
+		static getAdminsWithLevel(levels) {
+			return Admin.find({
+				level: levels
+			}, true)
+		}
+
+		toJSON() {
+			var jsonObj = super.toJSON();
+			[
+				"password",
+			].forEach(key => delete jsonObj[key]);
+			return jsonObj;
+		}
+
 	};
 	var config_keys = Admin.config_keys = [{
 		name: "提现费率",
