@@ -107,19 +107,21 @@ function install(socket, waterline_instance, classMap) {
 						des: "可以用手机号码、昵称、注册号进行登录"
 					}, {
 						name: "password"
+					}, {
+						name: "v_code"
 					}]
 				},
 				emit_with: ["form", "session"]
 			}, function*(data, config) {
 				var loginer_info = data.form;
-				/*
+				
 				var v_code = this.session.VerificationCode;
 				//校验完后就马上删除验证码
 				this.session.VerificationCode = null;
 				if (v_code !== loginer_info.v_code) {
 					throwE("验证码有误");
 				}
-				*/
+				
 				if (!loginer_info.login_name || !(loginer_info.login_name = loginer_info.login_name.trim())) {
 					throwE("登录帐号不可为空")
 				}
