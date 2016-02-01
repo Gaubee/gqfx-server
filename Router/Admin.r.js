@@ -51,11 +51,21 @@ function install(socket, waterline_instance, classMap) {
 						name: "[query.login_name]",
 					}, {
 						name: "[query.password]",
+					}, {
+						name: "v_code"
 					}]
 				},
 				emit_with: ["session", "form"]
 			}, function*(data, config) {
 				var loginer_info = data.form;
+
+				var v_code = this.session.VerificationCode;
+				//校验完后就马上删除验证码
+				this.session.VerificationCode = null;
+				if (v_code !== loginer_info.v_code) {
+					throwE("验证码有误");
+				}
+
 				var AdminCon = classMap.get("Admin");
 				var loginer = yield AdminCon.findOne({
 					admin_name: loginer_info.login_name
