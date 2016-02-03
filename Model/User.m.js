@@ -135,8 +135,13 @@ module.exports = [{
 		},
 		id_photos: {
 			title: "身份证照片",
-			type: "string",
-			is_url: true
+			type: "array",
+			maxLength: function(cb) {
+				this.id_photos = this.id_photos.filter(function(url) {
+					return $$.isUrl(url)
+				});
+				cb(this.id_photos.length <= 3);
+			}
 		},
 		bank_card_account_name: {
 			title: "银行卡开户名",
@@ -151,6 +156,11 @@ module.exports = [{
 			title: "银行卡号",
 			type: "string",
 			is_bank_card: true
+		},
+		bank_card_img: {
+			title: "银行卡照片",
+			type: "string",
+			is_url: true
 		},
 		recommender: {
 			title: "注册推荐人",
