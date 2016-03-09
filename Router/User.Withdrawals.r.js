@@ -29,10 +29,29 @@ function install(socket, waterline_instance, classMap) {
 				} catch (e) {
 					Throw("ref", "JSON_Data NO Work");
 				}
+				yield redis_client.thunk.DEL([key]);
+
 				this.body = pay_json_data;
 			}]
 		},
 		"post": {
+			"/user/make_wx_shaoma_pay": [{
+				doc: {
+					des: "生成扫描支付订单",
+					params: [{
+						name: "amount",
+						des: "充值金额"
+					}],
+					returns: [{
+						name: "url",
+						des: "扫描支付用的二维码",
+						type: "string"
+					}]
+				},
+				emit_with: ["session", "form"]
+			}, function*() {
+				this.body = "QAQ"
+			}],
 			"/apply": [{
 				doc: {
 					des: "用户申请提现",
