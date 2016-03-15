@@ -2,6 +2,9 @@ exports.install = install;
 var co = require("co");
 var Context = require("../socket_handles/context");
 var RedisClient = require("../Model/redis_index");
+var querystring = require("querystring");
+var os = require("os");
+var is_dev = os.type() !== "Linux";
 
 function install(socket, waterline_instance, classMap) {
 	"use strict";
@@ -49,8 +52,28 @@ function install(socket, waterline_instance, classMap) {
 					}]
 				},
 				emit_with: ["session", "form"]
-			}, function*() {
-				this.body = "QAQ"
+			}, function*(data) {
+				var user_loginer = yield this.user_loginer;
+				var url = "http://" + (is_dev ? "121.40.18.23" : "127.0.0.1") + ":4100/unifiedorderRequest?";
+				var id_prefix = Math.random().toString(36).substr(2, 6);
+				var qs = querystring.stringify({
+					body: "用户充值",
+					out_trade_no: id_prefix + user_loginer.id,
+					total_fee: data.form.amount * 100,
+					spbill_create_ip: "127.0.0.1",
+					trade_type: "NATIVE",
+					device_info: "WEB",
+					product_id: id_prefix + data.form.amount
+				});
+				// console.log(url + qs);
+				var res = yield $$.curl(url + qs);
+				res = JSON.parse(res);
+				// console.log(res)
+				if (res.codeUrl) {
+					this.body = res.codeUrl;
+				} else {
+					Throw("syntax", "WeiXin 支付服务器出错")
+				}
 			}],
 			"/apply": [{
 				doc: {
