@@ -5,6 +5,20 @@ var RedisClient = require("../Model/redis_index");
 var querystring = require("querystring");
 var os = require("os");
 var is_dev = os.type() !== "Linux";
+var http = require("http");
+var curl = function(url) {
+	return new Promise(function(resolve, reject) {
+		http.get(url, (res) => {
+			var bufs = [];
+			res.on("data", function(chunk) {
+				bufs.push(chunk)
+			});
+			res.on("end", function() {
+				resolve(Buffer.concat(bufs).toString());
+			});
+		}).on('error', reject);
+	});
+};
 
 function install(socket, waterline_instance, classMap) {
 	"use strict";
@@ -66,7 +80,7 @@ function install(socket, waterline_instance, classMap) {
 					product_id: id_prefix + data.form.amount
 				});
 				// console.log(url + qs);
-				var res = yield $$.curl(url + qs);
+				var res = yield curl(url + qs);
 				res = JSON.parse(res);
 				// console.log(res)
 				if (res.codeUrl) {
